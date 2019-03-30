@@ -1,0 +1,515 @@
+---
+title: "HW1-markdown"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+# set up the environment
+rm(list = ls())
+setwd('/Users/xiaoguihua/R/text_as_data') #set work directory
+
+# libraries are imported here; if you do not have any of these packages, use install.packages("package_name")
+library(quanteda)
+library(quanteda.corpora)
+library(koRpus.lang.en)
+library(stylest)
+library(stringr)
+library(gutenbergr)
+library(sophistication)
+library(dplyr)
+library(ggplot2)
+library(pbapply)
+library(corpus)
+
+```
+
+*1. First we’ll use the data from the U.S. inaugural addresses available in quanteda.corpora.*
+Let’s first look at the inaugural addresses given by Ronald Reagan in 1981 and 1985.
+
+(a) Calculate the TTR of each of these speeches and report your findings.
+
+```{r}
+#glance of the dataset
+head(summary(data_corpus_inaugural),10)
+
+#select two speeches from the speech list
+reagan = corpus_subset(data_corpus_inaugural, Year == 1981 | Year == 1985)
+t_reagan = quanteda::tokens(reagan, remove_punct = TRUE)
+
+TTR_reagan <- textstat_lexdiv(t_reagan,measure="TTR")
+```
+
+** The TTR for the 1981 speech is 0.3463 while the TTR  for the 1985 speech is 0.3356**
+```{r}
+TTR_reagan
+```
+
+(b) Create a document feature matrix of the two speeches, with no pre-processing other than to remove the punctuation–be sure to check the options on “dfm” in R as appropriate.Calculate the cosine distance between the two documents with quanteda. Report your findings.
+
+```{r}
+dfm_reagan <- dfm(reagan, remove_punct = TRUE,tolower=FALSE)
+reagan_simi <- textstat_simil(dfm_reagan, method='cosine')
+as.matrix(reagan_simi)
+```
+** The cosine distance between these two documents is 0.9562928 **
+
+*2.Consider different preprocessing choices you could make. For each of the following parts of this question, you have three tasks: (i), make a theoretical argument for how it should affect the TTR of each document and the similarity of the two documents, and (ii), re-do question (1a) with the preprocessing option indicated, and (iii) redo question(1b) with the preprocessing option indicated.*
+
+(a) Stemming the words?;
+(b) Removing stop words?;
+(c) Converting all words to lowercase?;
+(d) Does tf-idf weighting make sense here? Explain why or why not.
+
+
+(a) i: Stemming will lower the type number. The different forms of a single word (a word and its derivative words, different tenses) are previously thought different types. After stemming, they counted as a single type. Thus as a result, it will decrease the TTR. As for similarity, I think stemming will increase it at a limited level. Because both of the speeches are from Reagan and the preference of word form use of a certain person is fixed (to some extent).
+
+```{r} 
+# a.ii
+dfm_reagan_stem <- dfm(reagan, tolower=FALSE,remove_punct = TRUE,stem = TRUE)
+dfm_reagan_stem_TTR <- textstat_lexdiv(dfm_reagan_stem,measure="TTR")
+dfm_reagan_stem_TTR
+```
+
+
+```{r}
+# a.iii
+reagan_stem_simi <- textstat_simil(dfm_reagan_stem, method='cosine')
+as.matrix(reagan_stem_simi)
+```
+
+(b) i. Remove stop word: It will remove the words (such as "a", "the"", etc.) that repeat for a lot of times. This will lower the similarity of the two speeches and increase TTR. 
+
+```{r}
+# b.ii
+dfm_reagan_no_stopword <- dfm(reagan, tolower=FALSE,remove_punct = TRUE,remove=stopwords("english"))
+dfm_reagan_no_stopword_TTR <- textstat_lexdiv(dfm_reagan_no_stopword,measure="TTR")
+dfm_reagan_no_stopword_TTR
+```
+```{r}
+# b. iii
+dfm_reagan_no_stopword_simi <- textstat_simil(dfm_reagan_no_stopword, method='cosine')
+as.matrix(dfm_reagan_no_stopword_simi)
+```
+
+(c) i. Change all the words to lower form will influence the words that are used at the beginning  of the sentences, special noun (such as "United" and "united"). Type number will decrease. So TTR will increase while similarity will increase. But the extent of these change will be limited.
+
+```{r}
+# c.(ii)
+dfm_reagan_lower <- dfm(reagan, tolower=TRUE,remove_punct = TRUE)
+dfm_reagan_lower_TTR <- textstat_lexdiv(dfm_reagan_lower,measure="TTR")
+dfm_reagan_lower_TTR
+```
+
+```{r}
+# c. (iii)
+dfm_reagan_lower_simi <- textstat_simil(dfm_reagan_lower, method='cosine')
+as.matrix(dfm_reagan_lower_simi)
+```
+
+d. tfidf does not make sense in this question. Because here we only have two speeches as our pool, our document vectors are vertical. The cosine of two vertical vectors is 0. Thus, the weighted tfidf does not make sense in this question. 
+```{r}
+dfm_reagan_tfidf <- dfm_tfidf(dfm_reagan)
+textstat_simil(dfm_reagan_tfidf, method='cosine')
+```
+
+*3. Calculate the MLTD of each of the two speeches by RR, with the TTR limit set at .72. Rather than covering the entire speech, you can find the Mean Lengths starting from 25 different places in each speech, as long as there is no overlap between the snippets.*
+
+**The MTLD of 1981 Reagan speech is 69.33; MTLD of 1986 Reagan speech is 83.67. **
+```{r}
+#reagan[1] #you can exam the data here
+token_reagan_1981 <- koRpus::tokenize(reagan[1],doc_id="sample",lang="en",format = "obj") #tokenize 1981 speech
+token_reagan_1985 <- koRpus::tokenize(reagan[2],doc_id="sample",lang="en",format = "obj") #tokenize 1985 speech
+MTLD(token_reagan_1981, factor.size = 0.72, min.tokens = 25) #calculate MTLD
+MTLD(token_reagan_1985, factor.size = 0.72, min.tokens = 25) #calculate MTLD
+
+```
+
+*4. Take the following two headlines:*
+  *"Trump Says He’s ‘Not Happy’ With Border Deal, but Doesn’t Say if He Will Sign It."*
+  *"Trump ‘not happy’ with border deal, weighing options for building wall."*
+(a) Calculate the Euclidean distance between these sentences by hand—that is, you can use base R, but you can’t use functions from quanteda or similar. Use whatever pre- processing of the text you want, but justify your choice. Report your findings.
+(b) Calculate the Manhattan distance between these sentences by hand. Report your findings.
+(c) Calculate the cosine similarity between these sentences by hand. Report your findings.
+
+** The preprocessing include: remove punctuation from the sentences, turn each character to lowercase, split sentences to words, and construct dfm for the future calculation**
+**I remove the punct because He's and He are not different types. I turned all things to lowercase because 'With' and 'with' are not the different ones. The next two steps are just construct a matrix so that we could calculate distance between them **
+**The Euclidean  distance of the two sentences is 3.872983, the Manhattan distance between them is 15, the cosine similarity between them is 0.6205052**
+
+```{r}
+sen_1 <- "Trump Says He’s ‘Not Happy’ With Border Deal, but Doesn’t Say if He Will Sign It."
+sen_2 <- "Trump ‘not happy’ with border deal, weighing options for building wall."
+
+#remove punct
+sen_1 = gsub("[^A-Za-z0-9 ]", "", sen_1)
+sen_2 = gsub("[^A-Za-z0-9 ]", "", sen_2)
+
+#to lowercase
+sen_1_lower = tolower(sen_1)
+sen_2_lower = tolower(sen_2)
+
+#split sentences to vector
+vec_1 = str_split(sen_1_lower," ")[[1]]
+vec_2 = str_split(sen_2_lower," ")[[1]]
+
+vec_all = list(c(vec_1,vec_2))[[1]]
+#length(vec_all)
+len_vec = length(vec_all)
+
+dfm_sen_1 = replicate(len_vec,0)
+dfm_sen_2 = replicate(len_vec, 0)
+
+
+for (i in 1:len_vec){
+  filter_str = paste(paste("^",vec_all[i],sep=""),"$",sep="")
+  #print(filter_str)
+  dfm_sen_1[i] = length(grep(filter_str,vec_1))
+  dfm_sen_2[i] = length(grep(filter_str,vec_2))
+}
+#dfm_sen_1
+#dfm_sen_2
+
+```
+
+
+```{r}
+
+#dfm_sen_1 <- dfm(sen_1, tolower=FALSE)
+#dfm_sen_2 <- dfm(sen_2, tolower=FALSE)
+#length(dfm_sen_2)
+#length(dfm_sen_1)
+#zeros = c(0,0,0,0,0)
+#v_sen_1 = as.vector(dfm_sen_1)
+#v_sen_2 = append(as.vector(dfm_sen_2),zeros)
+norm_vec <- function(x) sqrt(sum(x^2))
+calculate_dist <- function(vec1, vec2) { 
+  euc_dist = sqrt(sum((vec1 - vec2)^2))
+  man_dist = sum(abs(vec1 - vec2))
+  nominator <- vec1%*% vec2  
+  # %*% specifies dot product rather than entry by entry multiplication (we could also do: sum(x * y))
+  norm_v1 = norm_vec(vec1)
+  norm_v2 = norm_vec(vec2)
+  denominator <- norm_v1 * norm_v2
+  cos_dist = nominator/denominator
+  return(list(Euclidean = euc_dist, Manhattan = man_dist,cosine=cos_dist))
+}
+
+calculate_dist(dfm_sen_1,dfm_sen_2)
+```
+
+** 5. You will be using Leslie Huang’s (a PhD student at NYU’s CDS) stylest package. To get the texts for this exercise you will need the gutenbergr package.**
+
+a.b) download novels and extract a short excerpt
+```{r}
+# first four works of : Austen, Jane; Twain, Mark;Joyce, James;Dickens, Charles
+#get all the book reference number in gutenbergr
+all_book_ref = c()
+for (i in c("Austen, Jane","Twain, Mark","Joyce, James","Dickens, Charles")){
+   new = gutenberg_works(author == i)[1:4,1]
+   all_book_ref = rbind(all_book_ref,new)
+}
+
+#remove the useless information: i.e.column name
+book_ref = c()
+for (i in all_book_ref){book_ref <- rbind(book_ref,i)}
+
+#download the book, select 500 lines from each of them, combine all the books together
+books = data.frame()
+for (ref in book_ref){
+  book <- gutenberg_download(ref,meta_fields = c('title','author'))
+  lines <- book[10:510,]
+  books <- rbind(books,lines)
+}
+
+# remove the special characters that is non-utf-8
+df <- data.frame(apply(books, 2, function(x) {x <- gsub("\xa0", "", x)}))
+
+```
+
+
+c) use the stylest_select_vocab function to select the terms you will include in your model.
+What percentile (of term frequency) has the best prediction rate? 
+Also report the rate of incorrectly predicted speakers of held-out texts.
+
+** 25 percentile has the best prediction rate. The rate of incorrectly predicted speakers of held-out texts is shwon below. **
+
+
+
+```{r}
+filter <- corpus::text_filter(drop_punct = TRUE, drop_number = TRUE, drop=stopwords_en)
+set.seed(2019L)
+vocab_custom <- stylest_select_vocab(df$text, df$author,  # fits n-fold cross-validation
+                                     filter = filter, smooth = 1, nfold = 10,cutoff_pcts = c(25, 50, 75, 99))
+
+vocab_custom$cutoff_pct_best # percentile with best prediction rate
+vocab_custom$miss_pct  # rate of incorrectly predicted speakers of held-out texts
+```
+
+(d)Use your optimal percentile from above to subset the terms to be included in your model (this requires you use the stylest terms function). Now go ahead and fit the model using stylest fit. The output of this function includes information on the rate at which each author uses each term (the value is labeled rate). Report the top 5 terms most used by each author. Do these terms make sense?
+
+**The top 5 terms for each author are shown below. However, in this case, althought the list is varied, it do not make sense(to some extent). For further analysis, we need to  make a more specific stopword list (i.e. remove Mr) and redo the process**
+
+```{r}
+# make the subset of the data using best cutoff percentile
+vocab_subset <- stylest_terms(df$text, df$author, 
+                              vocab_custom$cutoff_pct_best , filter = filter)
+# fit the model
+style_model <- stylest_fit(df$text, df$author, terms = vocab_subset, filter = filter)
+
+#get the top 5 terms for each author
+authors <- unique(df$author)
+term_usage <- style_model$rate
+lapply(authors, function(x) head(term_usage[x,][order(-term_usage[x,][1:5])])) %>% setNames(authors)
+
+```
+
+
+(e) Choose any two authors, take the ratio of their frequency vectors (make sure dimensions are in the same order) and arrange the resulting vector from largest to smallest values. What are the top 5 terms according to this ratio? How would you interpret this ordering?
+**The ratio could show the writer's preference of word choice.  For example, if one author prefer to use "heartly" one does not, the ratio will be very large  (like / not like)**
+
+```{r}
+#select two authors
+AJ_freq = term_usage[1,]
+TM_freq = term_usage[2,]
+AJ_freq[5]
+for (i in 1:50){
+  
+} 
+
+
+```
+
+
+
+(f) Load the mystery excerpt provided. According to your fitted model, who is the most likely author?
+**According to the model, Jane Austen is the most likely author for the mystery excerpt. **
+
+```{r}
+mystery_ex = readRDS("/Users/xiaoguihua/Desktop/text_as_data/mystery_excerpt.rds")
+pred = stylest_predict(style_model,mystery_ex)
+pred$predicted
+```
+
+
+6. For this question we will use the sophistication package discussed in the lab. The corpus for this exercise will be the U.S. inaugural addresses.
+(a) Using the aforementioned corpus make snippets between 150 to 350 characters in length and clean the snippets (print the top 10).
+
+
+```{r}
+# a) make snippets and clean them, print the top10
+snippetData <- snippets_make(data_corpus_inaugural, nsentence = 1, minchar = 150, maxchar = 350)
+# clean up the snippets
+snippetData <- snippets_clean(snippetData)
+# print head 10
+head(snippetData,10)
+```
+
+
+(b) Randomly sample 1000 snippets and use these to generate pairs for a minimum span- ning tree. From these generate 10 gold pairs (print these —only each pair of text— in your HW). Without looking at the automated classification, read each pair and select whichever you think is “easiest” to read. Now compare your classification with those made by the package. What proportion of the ten gold pairs were you in agreement with the automated classification? Any reasons why you may have arrived at a different judgment?
+
+
+```{r}
+set.seed(2019)
+pairData <- snippetData[sample(1:nrow(snippetData), 1000), ]
+snippetPairsMST <- pairs_regular_make(pairData)
+
+#gold pairs
+gold_pair <- pairs_gold_make(snippetPairsMST, n.pairs = 10)
+#get the texts
+gold_pair$text1
+gold_pair$text2
+
+#get the analysis result
+gold_pair
+```
+
+
+** The ones easier to read in my mind are in "[]"; the one "easier to read "according to the machine is in "()":**
+1. [B]  (A)
+2. [B]  (A)
+3. [B]  (B)
+4. [A]  (B)
+5. [A]  (A)
+6. [B]  (B)
+7. [B]  (B)
+8. [A]  (B)
+9. [A]  (B)
+10.[A]  (A)
+** As the chart shown above, only half of the answer coincide. It shows that the level of "understandable" is biased. It could be influenced by the level of vocabulary that the read has, whether the context is familiar to the reader (i.e. the art-related text will be easier to read for a art student rather than a geology student). Also, the sentence structure will have impact on the level of "easy to read" (non-native speakers would prefer the simply structured sentences).**
+
+
+7. Using James Joyce’s “A Portrait of the Artist as a Young Man” (gutenberg id = 4217) and Mark Twain’s “The Adventures of Tom Sawyer” (gutenberg id = 74), make a graph demon- strating Zipf’s law. Include this graph and also discuss any pre-processing decisions you made.
+
+```{r}
+JJ_4217 = gutenberg_download(4217)$text
+TM_74 = gutenberg_download(74)$text
+
+dfm_JJ_4217 <- dfm(JJ_4217, tolower=TRUE,remove_punct = TRUE,remove=stopwords("english"))
+plot(log10(1:100), log10(topfeatures(dfm_JJ_4217, 100)),
+     xlab = "log10(rank)", ylab = "log10(frequency)", main = "zipf's law for different texts")
+
+#make the regression reference line
+regression <- lm(log10(topfeatures(dfm_JJ_4217, 100)) ~ log10(1:100))
+abline(regression, col = "red")
+confint(regression)
+summary(regression)
+
+# add the TM_74 data
+dfm_TM_74 <- dfm(TM_74, tolower=FALSE,remove=stopwords("english"))
+points(log10(1:100), log10(topfeatures(dfm_TM_74, 100)),
+     xlab = "log10(rank)", ylab = "log10(frequency)", main = "zipf's law for different texts",col = 'blue')
+
+```
+
+**preprocessing procedures I used in this question are:  get texts from the metadata, convert from text to dfm, remove stopwords, remove punctuation, convert all characters to lowercase. **
+
+8. Find the value of b that best fit the two novels from the previous question to Heap’s law, fixing k = 44. Report the value of b as well as any pre-processing decisions you made.
+```{r}
+# 8. Find the value of b that best fit the two novels from the previous question to Heap’s law, 
+# fixing k = 44. Report the value of b as well as any pre-processing decisions you made.
+k <- 44
+M_JJ <- nfeat(dfm_JJ_4217) # number of features = number of types of JJ
+M_TM <- nfeat(dfm_TM_74) # number of features = number of types of TM
+Tee_JJ <- sum(lengths(TM_74)) #text size of JJ
+Tee_TM <- sum(lengths(JJ_4217)) # text size of TM
+
+# M = k*(Tee)^b, apply log to both sides of the equation
+# logM = b*log(k*(Tee)) => b = logM / log(k*(Tee))
+# calculate b in lines below
+b_JJ <- log(M_JJ/k,Tee_JJ)
+b_TM <- log(M_TM/k,Tee_TM)
+
+#report the result
+print (paste0("the value of b for 4217 is ",b_JJ))
+print (paste0("the value of b for 74 is ",b_TM))
+```
+** I used the same preprocessed dataset as question #7. get texts from the metadata, convert from text to dfm, remove stopwords, remove punctuation, convert all characters to lowercase. ** 
+** The value of b for James Joyce’s “A Portrait of the Artist as a Young Man” (gutenberg id = 4217)  is 0.5947 and for Mark Twain’s “The Adventures of Tom Sawyer” (gutenberg id = 74) is 0.5689.**  
+
+9. Both James Joyce’s “A Portrait of the Artist as a Young Man” and Mark Twain’s “The Adventures of Tom Sawyer” broach the topic of religion, but in very different ways. Choose a few Key Words in Context and discuss the different context in which those words are used by each author. Give a brief discussion of how the two novels treat this theme differently.
+
+**First we just try the "relig*", the result shows that Jame Joyce is more likely to talk about religious/religon straightfowardly and abstractly (more relig* word used in article). Then we used a series of religion-related words. From the result  we can see that Jame Joyce's “A Portrait of the Artist as a Young Man” is definitely more involved the religious themes.**
+```{r}
+#help(kwic)
+kwic(JJ_4217,pattern = "relig*",window=5,valuetype = "glob")
+```
+
+```{r}
+kwic(TM_74,pattern = "relig*",window=5,valuetype = "glob")
+```
+
+```{r}
+kwic(JJ_4217,pattern = c("god","bless","saint","holy","sin","contrite","hell","guilt","heaven","ordination","penance","christ","Jesus"),window=5,valuetype = "glob")
+```
+
+```{r}
+kwic(TM_74,pattern = c("god","bless","saint","holy","sin","contrite","hell","guilt","heaven","ordination","penance"),window=5,valuetype = "glob")
+```
+
+
+
+
+10. Consider the bootstrapping of the texts we used to calculate the standard errors of the Flesch reading scores of Irish budget speeches in Recitation 4.
+(a) Obtain the UK Conservative Party’s manifestos from quanteda.corpora. Generate es- timates of the FRE scores of these manifestos over time, using sentence-level bootstraps instead of the speech-level bootstraps used in Recitation 4. Include a graph of these estimates.
+
+```{r}
+#head(docvars(data_corpus_ukmanifestos), 10) # have a glance of data
+
+#select conservative party ones
+conserv = corpus_subset(data_corpus_ukmanifestos, Party == 'Con')
+conserv_sentence = corpus_reshape(conserv, to = "sentences")
+head(docvars(conserv), 10) # see the selected data
+
+# convert corpus to df 
+conserv_df <- conserv_sentence$documents %>% dplyr::select(texts,Party, Year)
+#%>% mutate(Year = as.integer(Year))
+# Let's filter out any NAs
+conserv_df <- na.omit(conserv_df)
+
+# FRE
+flesch_conserv <- conserv_df$texts %>% textstat_readability(measure = "Flesch") %>% 
+  dplyr::group_by(conserv_df$Year) %>% summarise(mean_flesch = mean(Flesch)) %>% setNames(c("Year","mean"))%>% arrange(Year)
+
+
+
+#plot 
+ggplot(flesch_conserv, aes(y = mean, x = Year,  colour = Year)) +
+  geom_point() +
+  coord_flip() + theme_bw() + scale_y_continuous(breaks=seq(floor(min(flesch_conserv$mean)), ceiling(max(flesch_conserv$mean)), by = 5)) +
+  xlab("") + ylab("Mean Fleisch Score by Year") + theme(legend.position = "none")
+
+```
+
+
+(b) Report the means of the bootstrapped results and the means observed in the data. Discuss the contrast.
+```{r}
+boot_flesch <- function(ydata){
+  N <- nrow(ydata)
+  bootstrap_sample <- sample_n(ydata, N, replace = TRUE)
+  readability_results <- textstat_readability(bootstrap_sample$texts, measure = "Flesch")
+  return(mean(readability_results$Flesch))
+}
+
+
+# apply function to each year
+iters <- 10
+Years = unique(conserv_df$Year)
+
+boot_flesch_by_year <- pblapply(Years, function(x){
+  sub_data <- conserv_df[conserv_df$Year == x,]
+  output_flesch <- lapply(1:iters, function(i) boot_flesch(sub_data))
+  return(unlist(output_flesch))
+  #return(sub_data)
+})
+names(boot_flesch_by_year) <- Years
+
+# compute mean and std.errors
+year_means <- lapply(boot_flesch_by_year, mean) %>% unname() %>% unlist()
+year_ses <- lapply(boot_flesch_by_year, sd) %>% unname() %>% unlist() # bootstrap standard error = sample standard deviation bootstrap distribution
+
+# Plot results--party
+plot_dt <- tibble(Year = Years, mean = year_means, ses = year_ses)
+
+
+# confidence intervals
+interval1 <- -qnorm((1-0.9)/2)   # 90% multiplier
+interval2 <- -qnorm((1-0.95)/2)  # 95% multiplier
+
+# ggplot point estimate + variance
+ggplot(plot_dt, aes(colour = Year)) +
+  geom_linerange(aes(x = Year, ymin = mean - ses*interval1, ymax = mean + ses*interval1), lwd = 1, position = position_dodge(width = 1/2)) +
+  geom_pointrange(aes(x = Year, y = mean, ymin = mean - ses*interval2, ymax = mean + ses*interval2), lwd = 1/2, position = position_dodge(width = 1/2), shape = 21, fill = "WHITE") +
+  coord_flip() + theme_bw() + scale_y_continuous(breaks=seq(floor(min(plot_dt$mean)), ceiling(max(plot_dt$mean)), by = 2)) +
+  xlab("") + ylab("Mean Fleisch Score by Year") + theme(legend.position = "none")
+
+
+flesch_conserv
+plot_dt
+
+```
+
+**The predicted and observed ones are shown above. We could see that the values are very similar**
+
+
+(c) For the empirical values of each text, calculate the FRE score and the Dale-Chall score. Report the FRE and Dale-Chall scores and the correlation between them.
+
+```{r}
+all_readability_measures <- textstat_readability(conserv, c("Flesch", "Dale.Chall"))
+textstat_readability(texts(conserv, groups = 'Year'),"Flesch")
+textstat_readability(texts(conserv, groups = 'Year'),"Dale.Chall")
+readability_matrix <- cbind(all_readability_measures$Flesch, all_readability_measures$Dale.Chall)
+
+readability_cor <- cor(readability_matrix)
+rownames(readability_cor) <- c("Flesch", "Dale-Chall")
+colnames(readability_cor) <- c("Flesch", "Dale-Chall")
+readability_cor
+```
+
+
+
+
+
+
+
