@@ -1,0 +1,2753 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={HW1-markdown},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{HW1-markdown}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# set up the environment}
+\KeywordTok{rm}\NormalTok{(}\DataTypeTok{list =} \KeywordTok{ls}\NormalTok{())}
+\KeywordTok{setwd}\NormalTok{(}\StringTok{'/Users/xiaoguihua/R/text_as_data'}\NormalTok{) }\CommentTok{#set work directory}
+
+\CommentTok{# libraries are imported here; if you do not have any of these packages, use install.packages("package_name")}
+\KeywordTok{library}\NormalTok{(quanteda)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Package version: 1.4.0
+\end{verbatim}
+
+\begin{verbatim}
+## Parallel computing: 2 of 8 threads used.
+\end{verbatim}
+
+\begin{verbatim}
+## See https://quanteda.io for tutorials and examples.
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'quanteda'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:utils':
+## 
+##     View
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(quanteda.corpora)}
+\KeywordTok{library}\NormalTok{(koRpus.lang.en)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: koRpus
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: sylly
+\end{verbatim}
+
+\begin{verbatim}
+## For information on available language packages for 'koRpus', run
+## 
+##   available.koRpus.lang()
+## 
+## and see ?install.koRpus.lang()
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'koRpus'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:quanteda':
+## 
+##     tokens, types
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(stylest)}
+\KeywordTok{library}\NormalTok{(stringr)}
+\KeywordTok{library}\NormalTok{(gutenbergr)}
+\KeywordTok{library}\NormalTok{(sophistication)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## sophistication version 0.65
+## Dropbox folder location set to:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(pbapply)}
+\KeywordTok{library}\NormalTok{(corpus)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{1. First we'll use the data from the U.S. inaugural addresses
+available in quanteda.corpora.} Let's first look at the inaugural
+addresses given by Ronald Reagan in 1981 and 1985.
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  Calculate the TTR of each of these speeches and report your findings.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#glance of the dataset}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(data_corpus_inaugural),}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               Text Types Tokens Sentences Year  President   FirstName
+## 1  1789-Washington   625   1538        23 1789 Washington      George
+## 2  1793-Washington    96    147         4 1793 Washington      George
+## 3       1797-Adams   826   2578        37 1797      Adams        John
+## 4   1801-Jefferson   717   1927        41 1801  Jefferson      Thomas
+## 5   1805-Jefferson   804   2381        45 1805  Jefferson      Thomas
+## 6     1809-Madison   535   1263        21 1809    Madison       James
+## 7     1813-Madison   541   1302        33 1813    Madison       James
+## 8      1817-Monroe  1040   3680       121 1817     Monroe       James
+## 9      1821-Monroe  1259   4886       129 1821     Monroe       James
+## 10      1825-Adams  1003   3152        74 1825      Adams John Quincy
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#select two speeches from the speech list}
+\NormalTok{reagan =}\StringTok{ }\KeywordTok{corpus_subset}\NormalTok{(data_corpus_inaugural, Year }\OperatorTok{==}\StringTok{ }\DecValTok{1981} \OperatorTok{|}\StringTok{ }\NormalTok{Year }\OperatorTok{==}\StringTok{ }\DecValTok{1985}\NormalTok{)}
+\NormalTok{t_reagan =}\StringTok{ }\NormalTok{quanteda}\OperatorTok{::}\KeywordTok{tokens}\NormalTok{(reagan, }\DataTypeTok{remove_punct =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{TTR_reagan <-}\StringTok{ }\KeywordTok{textstat_lexdiv}\NormalTok{(t_reagan,}\DataTypeTok{measure=}\StringTok{"TTR"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+** The TTR for the 1981 speech is 0.3463 while the TTR for the 1985
+speech is 0.3356**
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{TTR_reagan}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      document       TTR
+## 1 1981-Reagan 0.3463595
+## 2 1985-Reagan 0.3356835
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Create a document feature matrix of the two speeches, with no
+  pre-processing other than to remove the punctuation--be sure to check
+  the options on ``dfm'' in R as appropriate.Calculate the cosine
+  distance between the two documents with quanteda. Report your
+  findings.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dfm_reagan <-}\StringTok{ }\KeywordTok{dfm}\NormalTok{(reagan, }\DataTypeTok{remove_punct =} \OtherTok{TRUE}\NormalTok{,}\DataTypeTok{tolower=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{reagan_simi <-}\StringTok{ }\KeywordTok{textstat_simil}\NormalTok{(dfm_reagan, }\DataTypeTok{method=}\StringTok{'cosine'}\NormalTok{)}
+\KeywordTok{as.matrix}\NormalTok{(reagan_simi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             1981-Reagan 1985-Reagan
+## 1981-Reagan   1.0000000   0.9562928
+## 1985-Reagan   0.9562928   1.0000000
+\end{verbatim}
+
+** The cosine distance between these two documents is 0.9562928 **
+
+\emph{2.Consider different preprocessing choices you could make. For
+each of the following parts of this question, you have three tasks: (i),
+make a theoretical argument for how it should affect the TTR of each
+document and the similarity of the two documents, and (ii), re-do
+question (1a) with the preprocessing option indicated, and (iii) redo
+question(1b) with the preprocessing option indicated.}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\item
+  Stemming the words?;
+\item
+  Removing stop words?;
+\item
+  Converting all words to lowercase?;
+\item
+  Does tf-idf weighting make sense here? Explain why or why not.
+\item
+  i: Stemming will lower the type number. The different forms of a
+  single word (a word and its derivative words, different tenses) are
+  previously thought different types. After stemming, they counted as a
+  single type. Thus as a result, it will decrease the TTR. As for
+  similarity, I think stemming will increase it at a limited level.
+  Because both of the speeches are from Reagan and the preference of
+  word form use of a certain person is fixed (to some extent).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# a.ii}
+\NormalTok{dfm_reagan_stem <-}\StringTok{ }\KeywordTok{dfm}\NormalTok{(reagan, }\DataTypeTok{tolower=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{remove_punct =} \OtherTok{TRUE}\NormalTok{,}\DataTypeTok{stem =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{dfm_reagan_stem_TTR <-}\StringTok{ }\KeywordTok{textstat_lexdiv}\NormalTok{(dfm_reagan_stem,}\DataTypeTok{measure=}\StringTok{"TTR"}\NormalTok{)}
+\NormalTok{dfm_reagan_stem_TTR}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      document       TTR
+## 1 1981-Reagan 0.3319622
+## 2 1985-Reagan 0.3157070
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# a.iii}
+\NormalTok{reagan_stem_simi <-}\StringTok{ }\KeywordTok{textstat_simil}\NormalTok{(dfm_reagan_stem, }\DataTypeTok{method=}\StringTok{'cosine'}\NormalTok{)}
+\KeywordTok{as.matrix}\NormalTok{(reagan_stem_simi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             1981-Reagan 1985-Reagan
+## 1981-Reagan    1.000000    0.956706
+## 1985-Reagan    0.956706    1.000000
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{1}
+\item
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \tightlist
+  \item
+    Remove stop word: It will remove the words (such as ``a'',
+    ``the''``, etc.) that repeat for a lot of times. This will lower the
+    similarity of the two speeches and increase TTR.
+  \end{enumerate}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# b.ii}
+\NormalTok{dfm_reagan_no_stopword <-}\StringTok{ }\KeywordTok{dfm}\NormalTok{(reagan, }\DataTypeTok{tolower=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{remove_punct =} \OtherTok{TRUE}\NormalTok{,}\DataTypeTok{remove=}\KeywordTok{stopwords}\NormalTok{(}\StringTok{"english"}\NormalTok{))}
+\NormalTok{dfm_reagan_no_stopword_TTR <-}\StringTok{ }\KeywordTok{textstat_lexdiv}\NormalTok{(dfm_reagan_no_stopword,}\DataTypeTok{measure=}\StringTok{"TTR"}\NormalTok{)}
+\NormalTok{dfm_reagan_no_stopword_TTR}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      document       TTR
+## 1 1981-Reagan 0.6605585
+## 2 1985-Reagan 0.6041828
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# b. iii}
+\NormalTok{dfm_reagan_no_stopword_simi <-}\StringTok{ }\KeywordTok{textstat_simil}\NormalTok{(dfm_reagan_no_stopword, }\DataTypeTok{method=}\StringTok{'cosine'}\NormalTok{)}
+\KeywordTok{as.matrix}\NormalTok{(dfm_reagan_no_stopword_simi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             1981-Reagan 1985-Reagan
+## 1981-Reagan   1.0000000   0.6685686
+## 1985-Reagan   0.6685686   1.0000000
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{2}
+\item
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \tightlist
+  \item
+    Change all the words to lower form will influence the words that are
+    used at the beginning of the sentences, special noun (such as
+    ``United'' and ``united''). Type number will decrease. So TTR will
+    increase while similarity will increase. But the extent of these
+    change will be limited.
+  \end{enumerate}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# c.(ii)}
+\NormalTok{dfm_reagan_lower <-}\StringTok{ }\KeywordTok{dfm}\NormalTok{(reagan, }\DataTypeTok{tolower=}\OtherTok{TRUE}\NormalTok{,}\DataTypeTok{remove_punct =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{dfm_reagan_lower_TTR <-}\StringTok{ }\KeywordTok{textstat_lexdiv}\NormalTok{(dfm_reagan_lower,}\DataTypeTok{measure=}\StringTok{"TTR"}\NormalTok{)}
+\NormalTok{dfm_reagan_lower_TTR}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      document       TTR
+## 1 1981-Reagan 0.3463595
+## 2 1985-Reagan 0.3356835
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# c. (iii)}
+\NormalTok{dfm_reagan_lower_simi <-}\StringTok{ }\KeywordTok{textstat_simil}\NormalTok{(dfm_reagan_lower, }\DataTypeTok{method=}\StringTok{'cosine'}\NormalTok{)}
+\KeywordTok{as.matrix}\NormalTok{(dfm_reagan_lower_simi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             1981-Reagan 1985-Reagan
+## 1981-Reagan   1.0000000   0.9592961
+## 1985-Reagan   0.9592961   1.0000000
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  tfidf does not make sense in this question. Because here we only have
+  two speeches as our pool, our document vectors are vertical. The
+  cosine of two vertical vectors is 0. Thus, the weighted tfidf does not
+  make sense in this question.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dfm_reagan_tfidf <-}\StringTok{ }\KeywordTok{dfm_tfidf}\NormalTok{(dfm_reagan)}
+\KeywordTok{textstat_simil}\NormalTok{(dfm_reagan_tfidf, }\DataTypeTok{method=}\StringTok{'cosine'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             1981-Reagan
+## 1985-Reagan           0
+\end{verbatim}
+
+\emph{3. Calculate the MLTD of each of the two speeches by RR, with the
+TTR limit set at .72. Rather than covering the entire speech, you can
+find the Mean Lengths starting from 25 different places in each speech,
+as long as there is no overlap between the snippets.}
+
+\textbf{The MTLD of 1981 Reagan speech is 69.33; MTLD of 1986 Reagan
+speech is 83.67. }
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#reagan[1] #you can exam the data here}
+\NormalTok{token_reagan_}\DecValTok{1981}\NormalTok{ <-}\StringTok{ }\NormalTok{koRpus}\OperatorTok{::}\KeywordTok{tokenize}\NormalTok{(reagan[}\DecValTok{1}\NormalTok{],}\DataTypeTok{doc_id=}\StringTok{"sample"}\NormalTok{,}\DataTypeTok{lang=}\StringTok{"en"}\NormalTok{,}\DataTypeTok{format =} \StringTok{"obj"}\NormalTok{) }\CommentTok{#tokenize 1981 speech}
+\NormalTok{token_reagan_}\DecValTok{1985}\NormalTok{ <-}\StringTok{ }\NormalTok{koRpus}\OperatorTok{::}\KeywordTok{tokenize}\NormalTok{(reagan[}\DecValTok{2}\NormalTok{],}\DataTypeTok{doc_id=}\StringTok{"sample"}\NormalTok{,}\DataTypeTok{lang=}\StringTok{"en"}\NormalTok{,}\DataTypeTok{format =} \StringTok{"obj"}\NormalTok{) }\CommentTok{#tokenize 1985 speech}
+\KeywordTok{MTLD}\NormalTok{(token_reagan_}\DecValTok{1981}\NormalTok{, }\DataTypeTok{factor.size =} \FloatTok{0.72}\NormalTok{, }\DataTypeTok{min.tokens =} \DecValTok{25}\NormalTok{) }\CommentTok{#calculate MTLD}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Language: "en"
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Total number of tokens: 2442
+## Total number of types:  841
+## 
+## Measure of Textual Lexical Diversity
+##                 MTLD: 69.33
+##    Number of factors: 35.22
+##          Factor size: 0.72
+##     SD tokens/factor: 37.85 (all factors)
+##                       38.14 (complete factors only)
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Note: Analysis was conducted case insensitive.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{MTLD}\NormalTok{(token_reagan_}\DecValTok{1985}\NormalTok{, }\DataTypeTok{factor.size =} \FloatTok{0.72}\NormalTok{, }\DataTypeTok{min.tokens =} \DecValTok{25}\NormalTok{) }\CommentTok{#calculate MTLD}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Language: "en"
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Total number of tokens: 2578
+## Total number of types:  863
+## 
+## Measure of Textual Lexical Diversity
+##                 MTLD: 83.67
+##    Number of factors: 30.81
+##          Factor size: 0.72
+##     SD tokens/factor: 39.86 (all factors)
+##                       39.13 (complete factors only)
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Note: Analysis was conducted case insensitive.
+\end{verbatim}
+
+\emph{4. Take the following two headlines:} \emph{``Trump Says He's `Not
+Happy' With Border Deal, but Doesn't Say if He Will Sign It.''}
+\emph{``Trump `not happy' with border deal, weighing options for
+building wall.''} (a) Calculate the Euclidean distance between these
+sentences by hand---that is, you can use base R, but you can't use
+functions from quanteda or similar. Use whatever pre- processing of the
+text you want, but justify your choice. Report your findings. (b)
+Calculate the Manhattan distance between these sentences by hand. Report
+your findings. (c) Calculate the cosine similarity between these
+sentences by hand. Report your findings.
+
+** The preprocessing include: remove punctuation from the sentences,
+turn each character to lowercase, split sentences to words, and
+construct dfm for the future calculation\textbf{ }I remove the punct
+because He's and He are not different types. I turned all things to
+lowercase because `With' and `with' are not the different ones. The next
+two steps are just construct a matrix so that we could calculate
+distance between them \textbf{ }The Euclidean distance of the two
+sentences is 3.872983, the Manhattan distance between them is 15, the
+cosine similarity between them is 0.6205052**
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sen_}\DecValTok{1}\NormalTok{ <-}\StringTok{ "Trump Says He’s ‘Not Happy’ With Border Deal, but Doesn’t Say if He Will Sign It."}
+\NormalTok{sen_}\DecValTok{2}\NormalTok{ <-}\StringTok{ "Trump ‘not happy’ with border deal, weighing options for building wall."}
+
+\CommentTok{#remove punct}
+\NormalTok{sen_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[^A-Za-z0-9 ]"}\NormalTok{, }\StringTok{""}\NormalTok{, sen_}\DecValTok{1}\NormalTok{)}
+\NormalTok{sen_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[^A-Za-z0-9 ]"}\NormalTok{, }\StringTok{""}\NormalTok{, sen_}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{#to lowercase}
+\NormalTok{sen_1_lower =}\StringTok{ }\KeywordTok{tolower}\NormalTok{(sen_}\DecValTok{1}\NormalTok{)}
+\NormalTok{sen_2_lower =}\StringTok{ }\KeywordTok{tolower}\NormalTok{(sen_}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{#split sentences to vector}
+\NormalTok{vec_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{str_split}\NormalTok{(sen_1_lower,}\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{vec_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\KeywordTok{str_split}\NormalTok{(sen_2_lower,}\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+
+\NormalTok{vec_all =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(vec_}\DecValTok{1}\NormalTok{,vec_}\DecValTok{2}\NormalTok{))[[}\DecValTok{1}\NormalTok{]]}
+\CommentTok{#length(vec_all)}
+\NormalTok{len_vec =}\StringTok{ }\KeywordTok{length}\NormalTok{(vec_all)}
+
+\NormalTok{dfm_sen_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{replicate}\NormalTok{(len_vec,}\DecValTok{0}\NormalTok{)}
+\NormalTok{dfm_sen_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\KeywordTok{replicate}\NormalTok{(len_vec, }\DecValTok{0}\NormalTok{)}
+
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{len_vec)\{}
+\NormalTok{  filter_str =}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"^"}\NormalTok{,vec_all[i],}\DataTypeTok{sep=}\StringTok{""}\NormalTok{),}\StringTok{"$"}\NormalTok{,}\DataTypeTok{sep=}\StringTok{""}\NormalTok{)}
+  \CommentTok{#print(filter_str)}
+\NormalTok{  dfm_sen_}\DecValTok{1}\NormalTok{[i] =}\StringTok{ }\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(filter_str,vec_}\DecValTok{1}\NormalTok{))}
+\NormalTok{  dfm_sen_}\DecValTok{2}\NormalTok{[i] =}\StringTok{ }\KeywordTok{length}\NormalTok{(}\KeywordTok{grep}\NormalTok{(filter_str,vec_}\DecValTok{2}\NormalTok{))}
+\NormalTok{\}}
+\CommentTok{#dfm_sen_1}
+\CommentTok{#dfm_sen_2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#dfm_sen_1 <- dfm(sen_1, tolower=FALSE)}
+\CommentTok{#dfm_sen_2 <- dfm(sen_2, tolower=FALSE)}
+\CommentTok{#length(dfm_sen_2)}
+\CommentTok{#length(dfm_sen_1)}
+\CommentTok{#zeros = c(0,0,0,0,0)}
+\CommentTok{#v_sen_1 = as.vector(dfm_sen_1)}
+\CommentTok{#v_sen_2 = append(as.vector(dfm_sen_2),zeros)}
+\NormalTok{norm_vec <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x) }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{(x}\OperatorTok{^}\DecValTok{2}\NormalTok{))}
+\NormalTok{calculate_dist <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(vec1, vec2) \{ }
+\NormalTok{  euc_dist =}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{((vec1 }\OperatorTok{-}\StringTok{ }\NormalTok{vec2)}\OperatorTok{^}\DecValTok{2}\NormalTok{))}
+\NormalTok{  man_dist =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{abs}\NormalTok{(vec1 }\OperatorTok{-}\StringTok{ }\NormalTok{vec2))}
+\NormalTok{  nominator <-}\StringTok{ }\NormalTok{vec1}\OperatorTok{%*%}\StringTok{ }\NormalTok{vec2  }
+  \CommentTok{# %*% specifies dot product rather than entry by entry multiplication (we could also do: sum(x * y))}
+\NormalTok{  norm_v1 =}\StringTok{ }\KeywordTok{norm_vec}\NormalTok{(vec1)}
+\NormalTok{  norm_v2 =}\StringTok{ }\KeywordTok{norm_vec}\NormalTok{(vec2)}
+\NormalTok{  denominator <-}\StringTok{ }\NormalTok{norm_v1 }\OperatorTok{*}\StringTok{ }\NormalTok{norm_v2}
+\NormalTok{  cos_dist =}\StringTok{ }\NormalTok{nominator}\OperatorTok{/}\NormalTok{denominator}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{Euclidean =}\NormalTok{ euc_dist, }\DataTypeTok{Manhattan =}\NormalTok{ man_dist,}\DataTypeTok{cosine=}\NormalTok{cos_dist))}
+\NormalTok{\}}
+
+\KeywordTok{calculate_dist}\NormalTok{(dfm_sen_}\DecValTok{1}\NormalTok{,dfm_sen_}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $Euclidean
+## [1] 3.872983
+## 
+## $Manhattan
+## [1] 15
+## 
+## $cosine
+##           [,1]
+## [1,] 0.6205052
+\end{verbatim}
+
+** 5. You will be using Leslie Huang's (a PhD student at NYU's CDS)
+stylest package. To get the texts for this exercise you will need the
+gutenbergr package.**
+
+a.b) download novels and extract a short excerpt
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# first four works of : Austen, Jane; Twain, Mark;Joyce, James;Dickens, Charles}
+\CommentTok{#get all the book reference number in gutenbergr}
+\NormalTok{all_book_ref =}\StringTok{ }\KeywordTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \KeywordTok{c}\NormalTok{(}\StringTok{"Austen, Jane"}\NormalTok{,}\StringTok{"Twain, Mark"}\NormalTok{,}\StringTok{"Joyce, James"}\NormalTok{,}\StringTok{"Dickens, Charles"}\NormalTok{))\{}
+\NormalTok{   new =}\StringTok{ }\KeywordTok{gutenberg_works}\NormalTok{(author }\OperatorTok{==}\StringTok{ }\NormalTok{i)[}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{]}
+\NormalTok{   all_book_ref =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(all_book_ref,new)}
+\NormalTok{\}}
+
+\CommentTok{#remove the useless information: i.e.column name}
+\NormalTok{book_ref =}\StringTok{ }\KeywordTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in}\NormalTok{ all_book_ref)\{book_ref <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(book_ref,i)\}}
+
+\CommentTok{#download the book, select 500 lines from each of them, combine all the books together}
+\NormalTok{books =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (ref }\ControlFlowTok{in}\NormalTok{ book_ref)\{}
+\NormalTok{  book <-}\StringTok{ }\KeywordTok{gutenberg_download}\NormalTok{(ref,}\DataTypeTok{meta_fields =} \KeywordTok{c}\NormalTok{(}\StringTok{'title'}\NormalTok{,}\StringTok{'author'}\NormalTok{))}
+\NormalTok{  lines <-}\StringTok{ }\NormalTok{book[}\DecValTok{10}\OperatorTok{:}\DecValTok{510}\NormalTok{,]}
+\NormalTok{  books <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(books,lines)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Determining mirror for Project Gutenberg from http://www.gutenberg.org/robot/harvest
+\end{verbatim}
+
+\begin{verbatim}
+## Using mirror http://aleph.gutenberg.org
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# remove the special characters that is non-utf-8}
+\NormalTok{df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{apply}\NormalTok{(books, }\DecValTok{2}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(x) \{x <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}xa0}\StringTok{"}\NormalTok{, }\StringTok{""}\NormalTok{, x)\}))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  use the stylest\_select\_vocab function to select the terms you will
+  include in your model. What percentile (of term frequency) has the
+  best prediction rate? Also report the rate of incorrectly predicted
+  speakers of held-out texts.
+\end{enumerate}
+
+** 25 percentile has the best prediction rate. The rate of incorrectly
+predicted speakers of held-out texts is shwon below. **
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{filter <-}\StringTok{ }\NormalTok{corpus}\OperatorTok{::}\KeywordTok{text_filter}\NormalTok{(}\DataTypeTok{drop_punct =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{drop_number =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{drop=}\NormalTok{stopwords_en)}
+\KeywordTok{set.seed}\NormalTok{(2019L)}
+\NormalTok{vocab_custom <-}\StringTok{ }\KeywordTok{stylest_select_vocab}\NormalTok{(df}\OperatorTok{$}\NormalTok{text, df}\OperatorTok{$}\NormalTok{author,  }\CommentTok{# fits n-fold cross-validation}
+                                     \DataTypeTok{filter =}\NormalTok{ filter, }\DataTypeTok{smooth =} \DecValTok{1}\NormalTok{, }\DataTypeTok{nfold =} \DecValTok{10}\NormalTok{,}\DataTypeTok{cutoff_pcts =} \KeywordTok{c}\NormalTok{(}\DecValTok{25}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{75}\NormalTok{, }\DecValTok{99}\NormalTok{))}
+
+\NormalTok{vocab_custom}\OperatorTok{$}\NormalTok{cutoff_pct_best }\CommentTok{# percentile with best prediction rate}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 25
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vocab_custom}\OperatorTok{$}\NormalTok{miss_pct  }\CommentTok{# rate of incorrectly predicted speakers of held-out texts}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           [,1]     [,2]     [,3]     [,4]
+##  [1,] 46.63342 46.63342 51.12219 69.07731
+##  [2,] 47.13217 47.13217 50.12469 67.70574
+##  [3,] 42.51870 42.51870 48.50374 67.58105
+##  [4,] 46.63342 46.63342 49.50125 67.70574
+##  [5,] 45.00000 45.00000 46.00000 67.75000
+##  [6,] 44.38903 44.38903 47.63092 64.83791
+##  [7,] 43.64090 43.64090 48.75312 66.70823
+##  [8,] 46.38404 46.38404 48.50374 67.33167
+##  [9,] 45.19351 45.19351 49.93758 68.03995
+## [10,] 44.44444 44.44444 47.19101 67.91511
+\end{verbatim}
+
+(d)Use your optimal percentile from above to subset the terms to be
+included in your model (this requires you use the stylest terms
+function). Now go ahead and fit the model using stylest fit. The output
+of this function includes information on the rate at which each author
+uses each term (the value is labeled rate). Report the top 5 terms most
+used by each author. Do these terms make sense?
+
+\textbf{The top 5 terms for each author are shown below. However, in
+this case, althought the list is varied, it do not make sense(to some
+extent). For further analysis, we need to make a more specific stopword
+list (i.e.~remove Mr) and redo the process}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# make the subset of the data using best cutoff percentile}
+\NormalTok{vocab_subset <-}\StringTok{ }\KeywordTok{stylest_terms}\NormalTok{(df}\OperatorTok{$}\NormalTok{text, df}\OperatorTok{$}\NormalTok{author, }
+\NormalTok{                              vocab_custom}\OperatorTok{$}\NormalTok{cutoff_pct_best , }\DataTypeTok{filter =}\NormalTok{ filter)}
+\CommentTok{# fit the model}
+\NormalTok{style_model <-}\StringTok{ }\KeywordTok{stylest_fit}\NormalTok{(df}\OperatorTok{$}\NormalTok{text, df}\OperatorTok{$}\NormalTok{author, }\DataTypeTok{terms =}\NormalTok{ vocab_subset, }\DataTypeTok{filter =}\NormalTok{ filter)}
+
+\CommentTok{#get the top 5 terms for each author}
+\NormalTok{authors <-}\StringTok{ }\KeywordTok{unique}\NormalTok{(df}\OperatorTok{$}\NormalTok{author)}
+\NormalTok{term_usage <-}\StringTok{ }\NormalTok{style_model}\OperatorTok{$}\NormalTok{rate}
+\KeywordTok{lapply}\NormalTok{(authors, }\ControlFlowTok{function}\NormalTok{(x) }\KeywordTok{head}\NormalTok{(term_usage[x,][}\KeywordTok{order}\NormalTok{(}\OperatorTok{-}\NormalTok{term_usage[x,][}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{])])) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{setNames}\NormalTok{(authors)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $`Austen, Jane`
+##           mr          sir          one         said      chapter 
+## 0.0061202767 0.0061202767 0.0045997111 0.0025469475 0.0008743252 
+## 
+## $`Twain, Mark`
+##      chapter          one          sir         said           mr 
+## 0.0088760619 0.0046286212 0.0046286212 0.0040840775 0.0002722718 
+## 
+## $`Joyce, James`
+##         said          one           mr      chapter          sir 
+## 0.0101149207 0.0033716402 0.0006173426 0.0001424637 0.0001424637 
+## 
+## $`Dickens, Charles`
+##           mr      chapter          one         said          sir 
+## 0.0108137676 0.0093831524 0.0045022301 0.0039131532 0.0009677691
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Choose any two authors, take the ratio of their frequency vectors
+  (make sure dimensions are in the same order) and arrange the resulting
+  vector from largest to smallest values. What are the top 5 terms
+  according to this ratio? How would you interpret this ordering?
+  \textbf{The ratio could show the writer's preference of word choice.
+  For example, if one author prefer to use ``heartly'' one does not, the
+  ratio will be very large (like / not like)}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#select two authors}
+\NormalTok{AJ_freq =}\StringTok{ }\NormalTok{term_usage[}\DecValTok{1}\NormalTok{,]}
+\NormalTok{TM_freq =}\StringTok{ }\NormalTok{term_usage[}\DecValTok{2}\NormalTok{,]}
+\NormalTok{AJ_freq[}\DecValTok{5}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         sir 
+## 0.006120277
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{50}\NormalTok{)\{}
+  
+\NormalTok{\} }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Load the mystery excerpt provided. According to your fitted model, who
+  is the most likely author? \textbf{According to the model, Jane Austen
+  is the most likely author for the mystery excerpt. }
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mystery_ex =}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"/Users/xiaoguihua/Desktop/text_as_data/mystery_excerpt.rds"}\NormalTok{)}
+\NormalTok{pred =}\StringTok{ }\KeywordTok{stylest_predict}\NormalTok{(style_model,mystery_ex)}
+\NormalTok{pred}\OperatorTok{$}\NormalTok{predicted}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] Austen, Jane
+## Levels: Austen, Jane Dickens, Charles Joyce, James Twain, Mark
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  For this question we will use the sophistication package discussed in
+  the lab. The corpus for this exercise will be the U.S. inaugural
+  addresses.
+\end{enumerate}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  Using the aforementioned corpus make snippets between 150 to 350
+  characters in length and clean the snippets (print the top 10).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# a) make snippets and clean them, print the top10}
+\NormalTok{snippetData <-}\StringTok{ }\KeywordTok{snippets_make}\NormalTok{(data_corpus_inaugural, }\DataTypeTok{nsentence =} \DecValTok{1}\NormalTok{, }\DataTypeTok{minchar =} \DecValTok{150}\NormalTok{, }\DataTypeTok{maxchar =} \DecValTok{350}\NormalTok{)}
+\CommentTok{# clean up the snippets}
+\NormalTok{snippetData <-}\StringTok{ }\KeywordTok{snippets_clean}\NormalTok{(snippetData)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Cleaning 1,753 snippets...
+\end{verbatim}
+
+\begin{verbatim}
+##    removed 4 snippets containing numbers of at least 1,000
+\end{verbatim}
+
+\begin{verbatim}
+##    removed 1 snippets containing long elipses ....
+\end{verbatim}
+
+\begin{verbatim}
+##    removed 5 snippets containing ALL CAPS titles
+\end{verbatim}
+
+\begin{verbatim}
+##    ...finished.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# print head 10}
+\KeywordTok{head}\NormalTok{(snippetData,}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              docID snippetID
+## 1  1789-Washington    100001
+## 2  1789-Washington    100004
+## 3  1789-Washington    100007
+## 4  1789-Washington    100011
+## 5  1789-Washington    100012
+## 6  1789-Washington    100013
+## 7  1789-Washington    100014
+## 8  1789-Washington    100021
+## 9  1793-Washington    200002
+## 10 1793-Washington    200004
+##                                                                                                                                                                                                                                                                                                                                                           text
+## 1                                                                       Fellow-Citizens of the Senate and of the House of Representatives:  Among the vicissitudes incident to life no event could have filled me with greater anxieties than that of which the notification was transmitted by your order, and received on the 14th day of the present month.
+## 2                                                                                                                                                                          In this conflict of emotions all I dare aver is that it has been my faithful study to collect my duty from a just appreciation of every circumstance by which it might be affected.
+## 3                                                                                                                                            In tendering this homage to the Great Author of every public and private good, I assure myself that it expresses your sentiments not less than my own, nor those of my fellow citizens at large less than either.
+## 4                                                                                                                                                                                    You will join with me, I trust, in thinking that there are none under the influence of which the proceedings of a new and free government can more auspiciously commence.
+## 5                                                                                                                                                                      By the article establishing the executive department it is made the duty of the President "to recommend to your consideration such measures as he shall judge necessary and expedient."
+## 6                                                                      The circumstances under which I now meet you will acquit me from entering into that subject further than to refer to the great constitutional charter under which you are assembled, and which, in defining your powers, designates the objects to which your attention is to be given.
+## 7                                  It will be more consistent with those circumstances, and far more congenial with the feelings which actuate me, to substitute, in place of a recommendation of particular measures, the tribute that is due to the talents, the rectitude, and the patriotism which adorn the characters selected to devise and adopt them.
+## 8                                                                                                                       When I was first honored with a call into the service of my country, then on the eve of an arduous struggle for its liberties, the light in which I contemplated my duty required that I should renounce every pecuniary compensation.
+## 9                                                                                                                                        When the occasion proper for it shall arrive, I shall endeavor to express the high sense I entertain of this distinguished honor, and of the confidence which has been reposed in me by the people of united America.
+## 10 This oath I am now about to take, and in your presence: That if it shall be found during my administration of the Government I have in any instance violated willingly or knowingly the injunctions thereof, I may (besides incurring constitutional punishment) be subject to the upbraidings of all who are now witnesses of the present solemn ceremony.
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Randomly sample 1000 snippets and use these to generate pairs for a
+  minimum span- ning tree. From these generate 10 gold pairs (print
+  these ---only each pair of text--- in your HW). Without looking at the
+  automated classification, read each pair and select whichever you
+  think is ``easiest'' to read. Now compare your classification with
+  those made by the package. What proportion of the ten gold pairs were
+  you in agreement with the automated classification? Any reasons why
+  you may have arrived at a different judgment?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{2019}\NormalTok{)}
+\NormalTok{pairData <-}\StringTok{ }\NormalTok{snippetData[}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(snippetData), }\DecValTok{1000}\NormalTok{), ]}
+\NormalTok{snippetPairsMST <-}\StringTok{ }\KeywordTok{pairs_regular_make}\NormalTok{(pairData)}
+
+\CommentTok{#gold pairs}
+\NormalTok{gold_pair <-}\StringTok{ }\KeywordTok{pairs_gold_make}\NormalTok{(snippetPairsMST, }\DataTypeTok{n.pairs =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Starting the creation of gold questions...
+\end{verbatim}
+
+\begin{verbatim}
+##    computing Flesch readability measure
+\end{verbatim}
+
+\begin{verbatim}
+##    selecting top different 10 pairs
+\end{verbatim}
+
+\begin{verbatim}
+##    applying min.diff.quantile thresholds of 2.76, 36.28
+\end{verbatim}
+
+\begin{verbatim}
+##    creating gold_reason text
+\end{verbatim}
+
+\begin{verbatim}
+##    ...finished.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#get the texts}
+\NormalTok{gold_pair}\OperatorTok{$}\NormalTok{text1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "What kind of nation we will be, what kind of world we will live in, whether we shape the future in the image of our hopes, is ours to determine by our actions and our choices."                                                                                                                                                                          
+##  [2] "It may seem strange that any men should dare to ask a just God's assistance in wringing their bread from the sweat of other men's faces, but let us judge not, that we be not judged."                                                                                                                                                                    
+##  [3] "My experience in public concerns and the observation of a life somewhat advanced confirm the opinions long since imbibed by me, that the destruction of our State governments or the annihilation of their control over the local concerns of the people would lead directly to revolution and anarchy, and finally to despotism and military domination."
+##  [4] "Convinced that I owe my election to the inherent love for the Constitution and the Union which still animates the hearts of the American people, let me earnestly ask their powerful support in sustaining all just measures calculated to perpetuate these, the richest political blessings which Heaven has ever bestowed upon any nation."             
+##  [5] "And then we will do the wisest thing of all: We will turn to the only resource we have that in times of need always grows -- the goodness and the courage of the American people."                                                                                                                                                                        
+##  [6] "The Panama Canal will have a most important bearing upon the trade between the eastern and far western sections of our country, and will greatly increase the facilities for transportation between the eastern and the western seaboard, and may possibly revolutionize the transcontinental rates with respect to bulky merchandise."                   
+##  [7] "Our Constitution is so simple and practical that it is possible always to meet extraordinary needs by changes in emphasis and arrangement without loss of essential form."                                                                                                                                                                                
+##  [8] "AS our boundaries have been enlarged and our agricultural population has been spread over a large surface, our federative system has acquired additional strength and security."                                                                                                                                                                          
+##  [9] "Immunity should be granted to none who violate the laws, whether individuals, corporations, or communities; and as the Constitution imposes upon the President the duty of both its own execution, and of the statutes enacted in pursuance of its provisions, I shall endeavor carefully to carry them into effect."                                     
+## [10] "What the cynics fail to understand is that the ground has shifted beneath them -- that the stale political arguments that have consumed us for so long no longer apply."
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gold_pair}\OperatorTok{$}\NormalTok{text2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "The issue of a temporary restraining order without notice has in several instances been abused by its inconsiderate exercise, and to remedy this the platform upon which I was elected recommends the formulation in a statute of the conditions under which such a temporary restraining order ought to issue."     
+##  [2] "And may that Being who is supreme over all, the Patron of Order, the Fountain of Justice, and the Protector in all ages of the world of virtuous liberty, continue His blessing upon this nation and its Government and give it all possible success and duration consistent with the ends of His providence."       
+##  [3] "America has been the New World in all tongues, to all peoples, not because this continent was a new-found land, but because all those who came here believed they could create upon this continent a new life -- a life that should be new in freedom."                                                              
+##  [4] "From the day of our founding, we have proclaimed that every man and woman on this Earth has rights and dignity and matchless value, because they bear the image of the Maker of heaven and Earth."                                                                                                                   
+##  [5] "Repeated, liberal, and candid discussions in the Legislature have conciliated the sentiments and approximated the opinions of enlightened minds upon the question of constitutional power."                                                                                                                          
+##  [6] "We are summoned by this honored and historic ceremony to witness more than the act of one citizen swearing his oath of service, in the presence of God."                                                                                                                                                             
+##  [7] "Make the choice to serve in a cause larger than your wants, larger than yourself, and in your days you will add not just to the wealth of our country but to its character."                                                                                                                                         
+##  [8] "Therefore the past four years, so far as I could control events, have been consumed in the effort to restore harmony, public credit, commerce, and all the arts of peace and progress."                                                                                                                              
+##  [9] "We are the heirs of the ages, and yet we have had to pay few of the penalties which in old countries are exacted by the dead hand of a bygone civilization."                                                                                                                                                         
+## [10] "Immunity should be granted to none who violate the laws, whether individuals, corporations, or communities; and as the Constitution imposes upon the President the duty of both its own execution, and of the statutes enacted in pursuance of its provisions, I shall endeavor carefully to carry them into effect."
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#get the analysis result}
+\NormalTok{gold_pair}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            docID1 snippetID1
+## 1      1969-Nixon    4600012
+## 2    1865-Lincoln    2000018
+## 3    1833-Jackson    1200011
+## 4   1857-Buchanan    1800003
+## 5       1989-Bush    5100066
+## 6       1909-Taft    3100086
+## 7  1933-Roosevelt    3700064
+## 8       1845-Polk    1500124
+## 9   1897-McKinley    2800075
+## 10     2009-Obama    5600052
+##                                                                                                                                                                                                                                                                                                                                                        text1
+## 1                                                                                                                                                                            What kind of nation we will be, what kind of world we will live in, whether we shape the future in the image of our hopes, is ours to determine by our actions and our choices.
+## 2                                                                                                                                                                      It may seem strange that any men should dare to ask a just God's assistance in wringing their bread from the sweat of other men's faces, but let us judge not, that we be not judged.
+## 3  My experience in public concerns and the observation of a life somewhat advanced confirm the opinions long since imbibed by me, that the destruction of our State governments or the annihilation of their control over the local concerns of the people would lead directly to revolution and anarchy, and finally to despotism and military domination.
+## 4               Convinced that I owe my election to the inherent love for the Constitution and the Union which still animates the hearts of the American people, let me earnestly ask their powerful support in sustaining all just measures calculated to perpetuate these, the richest political blessings which Heaven has ever bestowed upon any nation.
+## 5                                                                                                                                                                          And then we will do the wisest thing of all: We will turn to the only resource we have that in times of need always grows -- the goodness and the courage of the American people.
+## 6                     The Panama Canal will have a most important bearing upon the trade between the eastern and far western sections of our country, and will greatly increase the facilities for transportation between the eastern and the western seaboard, and may possibly revolutionize the transcontinental rates with respect to bulky merchandise.
+## 7                                                                                                                                                                                  Our Constitution is so simple and practical that it is possible always to meet extraordinary needs by changes in emphasis and arrangement without loss of essential form.
+## 8                                                                                                                                                                            AS our boundaries have been enlarged and our agricultural population has been spread over a large surface, our federative system has acquired additional strength and security.
+## 9                                       Immunity should be granted to none who violate the laws, whether individuals, corporations, or communities; and as the Constitution imposes upon the President the duty of both its own execution, and of the statutes enacted in pursuance of its provisions, I shall endeavor carefully to carry them into effect.
+## 10                                                                                                                                                                                   What the cynics fail to understand is that the ground has shifted beneath them -- that the stale political arguments that have consumed us for so long no longer apply.
+##             docID2 snippetID2
+## 1        1909-Taft    3100156
+## 2       1797-Adams     300037
+## 3   1941-Roosevelt    3900044
+## 4        2005-Bush    5500012
+## 5       1825-Adams    1000067
+## 6  1953-Eisenhower    4200010
+## 7        2005-Bush    5500065
+## 8       1873-Grant    2200006
+## 9   1905-Roosevelt    3000003
+## 10   1897-McKinley    2800075
+##                                                                                                                                                                                                                                                                                                                   text2
+## 1       The issue of a temporary restraining order without notice has in several instances been abused by its inconsiderate exercise, and to remedy this the platform upon which I was elected recommends the formulation in a statute of the conditions under which such a temporary restraining order ought to issue.
+## 2         And may that Being who is supreme over all, the Patron of Order, the Fountain of Justice, and the Protector in all ages of the world of virtuous liberty, continue His blessing upon this nation and its Government and give it all possible success and duration consistent with the ends of His providence.
+## 3                                                                America has been the New World in all tongues, to all peoples, not because this continent was a new-found land, but because all those who came here believed they could create upon this continent a new life -- a life that should be new in freedom.
+## 4                                                                                                                     From the day of our founding, we have proclaimed that every man and woman on this Earth has rights and dignity and matchless value, because they bear the image of the Maker of heaven and Earth.
+## 5                                                                                                                            Repeated, liberal, and candid discussions in the Legislature have conciliated the sentiments and approximated the opinions of enlightened minds upon the question of constitutional power.
+## 6                                                                                                                                                               We are summoned by this honored and historic ceremony to witness more than the act of one citizen swearing his oath of service, in the presence of God.
+## 7                                                                                                                                           Make the choice to serve in a cause larger than your wants, larger than yourself, and in your days you will add not just to the wealth of our country but to its character.
+## 8                                                                                                                                Therefore the past four years, so far as I could control events, have been consumed in the effort to restore harmony, public credit, commerce, and all the arts of peace and progress.
+## 9                                                                                                                                                           We are the heirs of the ages, and yet we have had to pay few of the penalties which in old countries are exacted by the dead hand of a bygone civilization.
+## 10 Immunity should be granted to none who violate the laws, whether individuals, corporations, or communities; and as the Constitution imposes upon the President the duty of both its own execution, and of the statutes enacted in pursuance of its provisions, I shall endeavor carefully to carry them into effect.
+##        read1       read2  readdiff _golden easier_gold
+## 1  57.495000 -0.01428571  57.50929    TRUE           1
+## 2  71.595000 20.55320755  51.04179    TRUE           1
+## 3  -4.346364 49.79717391 -54.14354    TRUE           2
+## 4   4.590943 52.79500000 -48.20406    TRUE           2
+## 5  62.538571 -4.66000000  67.19857    TRUE           1
+## 6   5.165306 54.53642857 -49.37112    TRUE           2
+## 7  22.763333 70.30735294 -47.54402    TRUE           2
+## 8   7.991154 58.03000000 -50.03885    TRUE           2
+## 9  -1.740816 60.67375000 -62.41457    TRUE           2
+## 10 54.875862 -1.74081633  56.61668    TRUE           1
+##                                                                                                                                                                                                      easier_gold_reason
+## 1  Text A is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 2  Text A is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 3  Text B is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 4  Text B is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 5  Text A is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 6  Text B is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 7  Text B is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 8  Text B is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 9  Text B is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+## 10 Text A is "easier" to read because it contains some combination of shorter sentences, more commonly used and more easily understood terms, and is generally less complicated and easier to read and grasp its point.
+\end{verbatim}
+
+** The ones easier to read in my mind are in ``{[}{]}''; the one
+``easier to read''according to the machine is in ``()'':\textbf{ 1.
+{[}B{]} (A) 2. {[}B{]} (A) 3. {[}B{]} (B) 4. {[}A{]} (B) 5. {[}A{]} (A)
+6. {[}B{]} (B) 7. {[}B{]} (B) 8. {[}A{]} (B) 9. {[}A{]} (B) 10.{[}A{]}
+(A) } As the chart shown above, only half of the answer coincide. It
+shows that the level of ``understandable'' is biased. It could be
+influenced by the level of vocabulary that the read has, whether the
+context is familiar to the reader (i.e.~the art-related text will be
+easier to read for a art student rather than a geology student). Also,
+the sentence structure will have impact on the level of ``easy to read''
+(non-native speakers would prefer the simply structured sentences).**
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Using James Joyce's ``A Portrait of the Artist as a Young Man''
+  (gutenberg id = 4217) and Mark Twain's ``The Adventures of Tom
+  Sawyer'' (gutenberg id = 74), make a graph demon- strating Zipf's law.
+  Include this graph and also discuss any pre-processing decisions you
+  made.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{JJ_}\DecValTok{4217}\NormalTok{ =}\StringTok{ }\KeywordTok{gutenberg_download}\NormalTok{(}\DecValTok{4217}\NormalTok{)}\OperatorTok{$}\NormalTok{text}
+\NormalTok{TM_}\DecValTok{74}\NormalTok{ =}\StringTok{ }\KeywordTok{gutenberg_download}\NormalTok{(}\DecValTok{74}\NormalTok{)}\OperatorTok{$}\NormalTok{text}
+
+\NormalTok{dfm_JJ_}\DecValTok{4217}\NormalTok{ <-}\StringTok{ }\KeywordTok{dfm}\NormalTok{(JJ_}\DecValTok{4217}\NormalTok{, }\DataTypeTok{tolower=}\OtherTok{TRUE}\NormalTok{,}\DataTypeTok{remove_punct =} \OtherTok{TRUE}\NormalTok{,}\DataTypeTok{remove=}\KeywordTok{stopwords}\NormalTok{(}\StringTok{"english"}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{log10}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{100}\NormalTok{), }\KeywordTok{log10}\NormalTok{(}\KeywordTok{topfeatures}\NormalTok{(dfm_JJ_}\DecValTok{4217}\NormalTok{, }\DecValTok{100}\NormalTok{)),}
+     \DataTypeTok{xlab =} \StringTok{"log10(rank)"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"log10(frequency)"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"zipf's law for different texts"}\NormalTok{)}
+
+\CommentTok{#make the regression reference line}
+\NormalTok{regression <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\KeywordTok{log10}\NormalTok{(}\KeywordTok{topfeatures}\NormalTok{(dfm_JJ_}\DecValTok{4217}\NormalTok{, }\DecValTok{100}\NormalTok{)) }\OperatorTok{~}\StringTok{ }\KeywordTok{log10}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{100}\NormalTok{))}
+\KeywordTok{abline}\NormalTok{(regression, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
+\KeywordTok{confint}\NormalTok{(regression)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                   2.5 %     97.5 %
+## (Intercept)   2.6049208  2.6495966
+## log10(1:100) -0.4510439 -0.4236322
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(regression)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log10(topfeatures(dfm_JJ_4217, 100)) ~ log10(1:100))
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.078151 -0.012229  0.004016  0.013020  0.161616 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   2.627259   0.011256  233.40   <2e-16 ***
+## log10(1:100) -0.437338   0.006907  -63.32   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.0277 on 98 degrees of freedom
+## Multiple R-squared:  0.9761, Adjusted R-squared:  0.9759 
+## F-statistic:  4010 on 1 and 98 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add the TM_74 data}
+\NormalTok{dfm_TM_}\DecValTok{74}\NormalTok{ <-}\StringTok{ }\KeywordTok{dfm}\NormalTok{(TM_}\DecValTok{74}\NormalTok{, }\DataTypeTok{tolower=}\OtherTok{FALSE}\NormalTok{,}\DataTypeTok{remove=}\KeywordTok{stopwords}\NormalTok{(}\StringTok{"english"}\NormalTok{))}
+\KeywordTok{points}\NormalTok{(}\KeywordTok{log10}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{100}\NormalTok{), }\KeywordTok{log10}\NormalTok{(}\KeywordTok{topfeatures}\NormalTok{(dfm_TM_}\DecValTok{74}\NormalTok{, }\DecValTok{100}\NormalTok{)),}
+     \DataTypeTok{xlab =} \StringTok{"log10(rank)"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"log10(frequency)"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"zipf's law for different texts"}\NormalTok{,}\DataTypeTok{col =} \StringTok{'blue'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Yunhe_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\textbf{preprocessing procedures I used in this question are: get texts
+from the metadata, convert from text to dfm, remove stopwords, remove
+punctuation, convert all characters to lowercase. }
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Find the value of b that best fit the two novels from the previous
+  question to Heap's law, fixing k = 44. Report the value of b as well
+  as any pre-processing decisions you made.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 8. Find the value of b that best fit the two novels from the previous question to Heap’s law, }
+\CommentTok{# fixing k = 44. Report the value of b as well as any pre-processing decisions you made.}
+\NormalTok{k <-}\StringTok{ }\DecValTok{44}
+\NormalTok{M_JJ <-}\StringTok{ }\KeywordTok{nfeat}\NormalTok{(dfm_JJ_}\DecValTok{4217}\NormalTok{) }\CommentTok{# number of features = number of types of JJ}
+\NormalTok{M_TM <-}\StringTok{ }\KeywordTok{nfeat}\NormalTok{(dfm_TM_}\DecValTok{74}\NormalTok{) }\CommentTok{# number of features = number of types of TM}
+\NormalTok{Tee_JJ <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{lengths}\NormalTok{(TM_}\DecValTok{74}\NormalTok{)) }\CommentTok{#text size of JJ}
+\NormalTok{Tee_TM <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{lengths}\NormalTok{(JJ_}\DecValTok{4217}\NormalTok{)) }\CommentTok{# text size of TM}
+
+\CommentTok{# M = k*(Tee)^b, apply log to both sides of the equation}
+\CommentTok{# logM = b*log(k*(Tee)) => b = logM / log(k*(Tee))}
+\CommentTok{# calculate b in lines below}
+\NormalTok{b_JJ <-}\StringTok{ }\KeywordTok{log}\NormalTok{(M_JJ}\OperatorTok{/}\NormalTok{k,Tee_JJ)}
+\NormalTok{b_TM <-}\StringTok{ }\KeywordTok{log}\NormalTok{(M_TM}\OperatorTok{/}\NormalTok{k,Tee_TM)}
+
+\CommentTok{#report the result}
+\KeywordTok{print}\NormalTok{ (}\KeywordTok{paste0}\NormalTok{(}\StringTok{"the value of b for 4217 is "}\NormalTok{,b_JJ))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "the value of b for 4217 is 0.586398480820164"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{ (}\KeywordTok{paste0}\NormalTok{(}\StringTok{"the value of b for 74 is "}\NormalTok{,b_TM))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "the value of b for 74 is 0.5689630248526"
+\end{verbatim}
+
+** I used the same preprocessed dataset as question \#7. get texts from
+the metadata, convert from text to dfm, remove stopwords, remove
+punctuation, convert all characters to lowercase. ** ** The value of b
+for James Joyce's ``A Portrait of the Artist as a Young Man'' (gutenberg
+id = 4217) is 0.5947 and for Mark Twain's ``The Adventures of Tom
+Sawyer'' (gutenberg id = 74) is 0.5689.**
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{8}
+\tightlist
+\item
+  Both James Joyce's ``A Portrait of the Artist as a Young Man'' and
+  Mark Twain's ``The Adventures of Tom Sawyer'' broach the topic of
+  religion, but in very different ways. Choose a few Key Words in
+  Context and discuss the different context in which those words are
+  used by each author. Give a brief discussion of how the two novels
+  treat this theme differently.
+\end{enumerate}
+
+**First we just try the ``relig*``, the result shows that Jame Joyce is
+more likely to talk about religious/religon straightfowardly and
+abstractly (more relig* word used in article). Then we used a series of
+religion-related words. From the result we can see that Jame Joyce's ``A
+Portrait of the Artist as a Young Man'' is definitely more involved the
+religious themes.**
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#help(kwic)}
+\KeywordTok{kwic}\NormalTok{(JJ_}\DecValTok{4217}\NormalTok{,}\DataTypeTok{pattern =} \StringTok{"relig*"}\NormalTok{,}\DataTypeTok{window=}\DecValTok{5}\NormalTok{,}\DataTypeTok{valuetype =} \StringTok{"glob"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                                 
+##  [text1053, 11] would confine their attention to |  religion   |
+##   [text1055, 5]                         -- It is |  religion   |
+##   [text1061, 5]                         -- It is |  religion   |
+##   [text1189, 7]         he heard against God and |  religion   |
+##  [text1215, 16]          defend my church and my |  religion   |
+##  [text1417, 16]           ! God and morality and |  religion   |
+##   [text1424, 5]                       -- God and |  religion   |
+##  [text1424, 14]             Dante cried. God and |  religion   |
+##  [text4237, 12]         on the mysteries of holy |  religion   |
+##   [text4729, 1]                                  |  religious  |
+##   [text4933, 1]                                  | religiously |
+##   [text4938, 3]                          of holy |  religion   |
+##  [text5970, 10]            whom God calls to the |  religious  |
+##  [text6122, 10]          be elusive of social or |  religious  |
+##   [text6818, 2]                         catholic |  religion   |
+##   [text7568, 4]               independent of all |  religions  |
+##   [text7801, 3]                        language, |  religion   |
+##   [text9268, 4]                         -- About |  religion   |
+##   [text9312, 9]        persons have doubts, even |  religious  |
+##   [text9346, 7]  mind is supersaturated with the |  religion   |
+##   [text9495, 5]               feel sure that our |  religion   |
+##  [text9762, 13]                and her son. Said |  religion   |
+##   [text9781, 1]                                  |  religion   |
+##                                
+##  .                             
+##  , Dante said. They            
+##  , Dante said again.           
+##  and priests in his own        
+##  when                          
+##                                
+##  before everything! Dante cried
+##                                
+##  and to                        
+##  duties, you would not         
+##  by your parents. You          
+##  , you turned your back        
+##  life. Such a boy              
+##  orders. The wisdom of         
+##  , the attitude of a           
+##  . Is that your opinion        
+##  . I shall try to              
+##  ?                             
+##  persons, yet they overcome    
+##  in which you say you          
+##  is false and that Jesus       
+##                                
+##  . A quartet of them
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kwic}\NormalTok{(TM_}\DecValTok{74}\NormalTok{,}\DataTypeTok{pattern =} \StringTok{"relig*"}\NormalTok{,}\DataTypeTok{window=}\DecValTok{5}\NormalTok{,}\DataTypeTok{valuetype =} \StringTok{"glob"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                           
+##  [text5524, 17]                Other Days";" | Religion  |
+##  [text5536, 14]     other that the moral and | religious |
+##   [text5543, 6] most frivolous and the least | religious |
+##   [text5733, 5]           everybody had" got | religion  |
+##                       
+##  in                   
+##                       
+##  girl in the school is
+##  ," not only the
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kwic}\NormalTok{(JJ_}\DecValTok{4217}\NormalTok{,}\DataTypeTok{pattern =} \KeywordTok{c}\NormalTok{(}\StringTok{"god"}\NormalTok{,}\StringTok{"bless"}\NormalTok{,}\StringTok{"saint"}\NormalTok{,}\StringTok{"holy"}\NormalTok{,}\StringTok{"sin"}\NormalTok{,}\StringTok{"contrite"}\NormalTok{,}\StringTok{"hell"}\NormalTok{,}\StringTok{"guilt"}\NormalTok{,}\StringTok{"heaven"}\NormalTok{,}\StringTok{"ordination"}\NormalTok{,}\StringTok{"penance"}\NormalTok{,}\StringTok{"christ"}\NormalTok{,}\StringTok{"Jesus"}\NormalTok{),}\DataTypeTok{window=}\DecValTok{5}\NormalTok{,}\DataTypeTok{valuetype =} \StringTok{"glob"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                                    
+##    [text388, 2]                                  And |   heaven   |
+##    [text401, 4]                     everywhere. Only |    God     |
+##   [text402, 12]               he could only think of |    God     |
+##   [text402, 14]                   only think of God. |    God     |
+##   [text403, 14]              DIEU was the French for |    God     |
+##   [text404, 11]            and when anyone prayed to |    God     |
+##    [text405, 1]                                      |    God     |
+##    [text406, 7]       there were different names for |    God     |
+##    [text407, 6]           languages in the world and |    God     |
+##    [text408, 9]     their different languages, still |    God     |
+##    [text409, 2]                                 same |    God     |
+##    [text409, 8]              and God's real name was |    God     |
+##    [text456, 7]                      unto our aid, O |    God     |
+##   [text460, 15]                       . But it was a |    holy    |
+##    [text463, 7]                 . But they were very |    holy    |
+##   [text479, 13]                   THE ENEMY. MAY THY |    HOLY    |
+##    [text481, 7]            BE ALWAYS UPON US THROUGH |   CHRIST   |
+##    [text488, 4]                            not go to |    hell    |
+##    [text493, 1]                                      |    God     |
+##    [text493, 2]                                  God |   bless    |
+##    [text494, 1]                                      |    God     |
+##    [text494, 2]                                  God |   bless    |
+##    [text495, 1]                                      |    God     |
+##    [text495, 2]                                  God |   bless    |
+##   [text500, 14]                   he would not go to |    hell    |
+##    [text672, 2]                                  not |    holy    |
+##   [text946, 12]            watery about the dewlaps, |    God     |
+##   [text946, 13]               about the dewlaps, God |   bless    |
+##    [text978, 1]                                      |   Bless    |
+##    [text979, 9]         are about to receive through |   Christ   |
+##  [text1046, 17]           CEASE TURNING THE HOUSE OF |    GOD     |
+##   [text1058, 9]                   go to the house of |    God     |
+##   [text1122, 2]                                  the |    Holy    |
+##   [text1189, 5]            language he heard against |    God     |
+##   [text1198, 7]                     they look it! By |   Christ   |
+##   [text1285, 1]                                      |    God     |
+##   [text1331, 4]                                 -- O |   JESUS    |
+##   [text1360, 3]                          band played |    GOD     |
+##  [text1386, 11]                 TOUCH THEM NOT, says |   Christ   |
+##   [text1412, 6]                             -- O, by |    God     |
+##  [text1417, 12]              They were always right! |    God     |
+##   [text1424, 3]                                   -- |    God     |
+##  [text1424, 12]             everything! Dante cried. |    God     |
+##  [text1430, 18]                    comes to that, no |    God     |
+##   [text1440, 4]                                -- No |    God     |
+##  [text1440, 16]                 We have had too much |    God     |
+##   [text1441, 3]                            Away with |    God     |
+##   [text1450, 5]                         -- Away with |    God     |
+##   [text1458, 6]                      -- Devil out of |    hell    |
+##   [text1530, 2]                                    a |    holy    |
+##   [text1532, 9]                  wood. A strange and |    holy    |
+##   [text1768, 3]                           a terrible |    sin     |
+##   [text1769, 9]       flashing gold thing into which |    God     |
+##  [text1772, 14]                    in the choir. But |    God     |
+##   [text1774, 3]                              a great |    sin     |
+##   [text1775, 4]                 terrible and strange |    sin     |
+##  [text1777, 11]                   by the smell was a |    sin     |
+##   [text1780, 1]                                      |    holy    |
+##   [text1782, 5]                      to give him the |    holy    |
+##   [text1794, 3]                             my first |    holy    |
+##   [text1824, 4]                           Was that a |    sin     |
+##  [text1827, 10]             priest would know what a |    sin     |
+##   [text2144, 6]               silently as he passed: |   saint    |
+##  [text2145, 12]                   DEI GLORIAM in it; |   saint    |
+##  [text2147, 15]               , the three patrons of |    holy    |
+##   [text2148, 4]                              youth-- |   saint    |
+##   [text2148, 8]           - saint Stanislaus Kostka, |   saint    |
+##  [text2336, 10]              It's like gunpowder, by |    God     |
+##   [text2396, 5]               perhaps he prayed that |    God     |
+##  [text2541, 10]                      No, by the Lord |   Jesus    |
+##  [text2541, 12]                   by the Lord Jesus( |    God     |
+##   [text2761, 7]                         . Fed up, by |    God     |
+##   [text2772, 5]                                -- O, |    Holy    |
+##   [text3003, 9]                 . You can't play the |   saint    |
+##   [text3415, 2]                                   to |    God     |
+##   [text3415, 4]                           to God nor |   saint    |
+##  [text3588, 15]                     at that time, by |    God     |
+##  [text3697, 14]                  same again here. By |    God     |
+##   [text3704, 6]                            -- No, by |    God     |
+##   [text3717, 7]                   - And thanks be to |    God     |
+##   [text3721, 3]                                be to |    God     |
+##   [text3737, 3]                          Of climbing |   heaven   |
+##   [text3767, 3]                                   -- |    God     |
+##   [text3770, 8]                      abroad. Why, by |    God     |
+##   [text3843, 2]                               mortal |    sin     |
+##   [text3869, 5]                          now, of the |    holy    |
+##  [text3877, 14]                  beast. He wanted to |    sin     |
+##  [text3878, 12]            to force another being to |    sin     |
+##   [text3879, 5]                    exult with her in |    sin     |
+##  [text3887, 16]               wail of despair from a |    hell    |
+##   [text3939, 1]                                      |    sin     |
+##  [text3991, 13]      to experience, unfolding itself |    sin     |
+##   [text3992, 1]                                      |    sin     |
+##  [text3996, 14]               . At his first violent |    sin     |
+##   [text4004, 8]      eternal damnation for the first |    sin     |
+##   [text4005, 2]                           succeeding |    sin     |
+##   [text4005, 6]     succeeding sin he multiplied his |   guilt    |
+##   [text4012, 6]        withheld him from offering to |    God     |
+##   [text4015, 1]                                      |    sin     |
+##   [text4015, 7]                , his loveless awe of |    God     |
+##   [text4056, 2]                                  His |    sin     |
+##  [text4056, 12]                him from the sight of |    God     |
+##   [text4060, 4]                     impelled to cast |    sin     |
+##   [text4064, 5]                  MUSICAL, TELLING OF |   HEAVEN   |
+##   [text4095, 6]        condemnation. The sentence of |   saint    |
+##   [text4114, 6]    beatitude promises the kingdom of |   heaven   |
+##   [text4117, 7]                 of bread and wine if |   Jesus    |
+##   [text4117, 8]              bread and wine if Jesus |   Christ   |
+##   [text4120, 2]                                   of |   Jesus    |
+##   [text4120, 3]                             of Jesus |   Christ   |
+##   [text4122, 6]            have been consecrated, is |   Jesus    |
+##   [text4122, 7]           been consecrated, is Jesus |   Christ   |
+##   [text4123, 3]                           species as |    God     |
+##  [text4136, 13]     Wednesday afternoon in honour of |   saint    |
+##  [text4155, 14]                 story of the life of |   saint    |
+##   [text4158, 4]                   first followers of |   saint    |
+##   [text4162, 4]                          was sent by |   saint    |
+##  [text4168, 14]             win still more souls for |    God     |
+##  [text4169, 12]                  of Sancian. A great |   saint    |
+##  [text4169, 14]                     . A great saint, |   saint    |
+##   [text4170, 7]                 ! A great soldier of |    God     |
+##   [text4176, 2]                                  for |    God     |
+##  [text4177, 11]               MAJOREM DEI GLORIAM! A |   saint    |
+##   [text4178, 1]                                      |   heaven   |
+##  [text4180, 15]                   repent if we be in |    sin     |
+##   [text4181, 1]                                      |   saint    |
+##   [text4181, 3]                               saint, |   saint    |
+##  [text4195, 12]            THINGS AND THOU SHALT NOT |    SIN     |
+##   [text4196, 8]           my dear little brothers in |   Christ   |
+##   [text4198, 9]                   the Son and of the |    Holy    |
+##  [text4211, 14]           my dear little brothers in |   Christ   |
+##   [text4214, 6]               the Indies, the patron |   saint    |
+##  [text4214, 12]                also of your college, |   saint    |
+##   [text4218, 8]            feast day of their patron |   saint    |
+##   [text4224, 5]                  called by the great |    God     |
+##  [text4226, 12]              the memory of the great |   saint    |
+##  [text4228, 11]                 day set apart by our |    Holy    |
+##   [text4234, 2]                               before |    God     |
+##  [text4237, 11]          reflect on the mysteries of |    holy    |
+##   [text4241, 1]                                      |    hell    |
+##   [text4241, 4]                            hell, and |   heaven   |
+##   [text4245, 1]                                      |    holy    |
+##   [text4259, 4]                      sodality of the |    holy    |
+##  [text4262, 16]            this retreat in honour of |   saint    |
+##   [text4268, 4]                       give thanks to |    God     |
+##  [text4271, 11] unutterable misfortune to lose God's |    holy    |
+##   [text4272, 6]            and to fall into grievous |    sin     |
+##   [text4274, 1]                                      |    God     |
+##  [text4275, 12]      sincere repentance and that the |    holy    |
+##   [text4276, 1]                                      |   saint    |
+##  [text4276, 13]        be a lasting covenant between |    God     |
+##  [text4277, 11]                 just and unjust, for |   saint    |
+##  [text4280, 11]           my dear little brothers in |   Christ   |
+##   [text4283, 5]                    death, judgement, |    hell    |
+##   [text4283, 8]                 judgement, hell, and |   heaven   |
+##   [text4284, 5]              Ecclesiastes, shall not |    sin     |
+##  [text4290, 18]                   the Son and of the |    Holy    |
+##   [text4309, 2]                               bovine |    god     |
+##   [text4332, 5]                  the judgement seat. |    God     |
+##   [text4335, 6]                    gone. Time was to |    sin     |
+##  [text4335, 16]                 time was to scoff at |    God     |
+##   [text4336, 4]                      warnings of His |    holy    |
+##  [text4337, 12]                fellow men, to commit |    sin     |
+##  [text4337, 14]                , to commit sin after |    sin     |
+##   [text4340, 2]                                Every |    sin     |
+##   [text4345, 6]         before the judgement seat of |    God     |
+##   [text4350, 5]             been hurled howling into |    hell    |
+##  [text4354, 15]                   hand. The stars of |   heaven   |
+##  [text4368, 12]             longer the lowly Lamb of |    God     |
+##   [text4369, 2]                                 meek |   Jesus    |
+##   [text4373, 4]                        and seraphim, |    God     |
+##   [text4373, 7]            seraphim, God Omnipotent, |    God     |
+##   [text4390, 9]                   is a foul swamp of |    sin     |
+##  [text4396, 13]                 accident: the Son of |    God     |
+##  [text4399, 13]                into the world by the |    sin     |
+##   [text4405, 1]                                      |    sin     |
+##   [text4408, 3]                      approaching the |    holy    |
+##  [text4418, 11]                 for him. Against his |    sin     |
+##   [text4419, 4]                       whole wrath of |    God     |
+##   [text4421, 3]                         festering in |    sin     |
+##   [text4424, 3]                          darkness of |    sin     |
+##   [text4453, 6]       from its abject powerlessness. |    God     |
+##   [text4454, 4]                            from him: |    God     |
+##   [text4455, 2]                                  and |    holy    |
+##   [text4459, 8]                  a pale green sea of |   heaven   |
+##   [text4468, 1]                                      |   heaven   |
+##   [text4489, 3]                                   -- |    HELL    |
+##  [text4490, 12]           my dear little brothers in |   Christ   |
+##  [text4490, 13]       dear little brothers in Christ |   Jesus    |
+##   [text4492, 9]                   the Son and of the |    Holy    |
+##  [text4501, 10]            that they were created by |    God     |
+##   [text4502, 3]                             seats in |   heaven   |
+##  [text4505, 11]                  part of the host of |   heaven   |
+##   [text4506, 7]      with his rebellious angels into |    hell    |
+##  [text4506, 11]                  into hell. What his |    sin     |
+##   [text4507, 9]             consider that it was the |    sin     |
+##   [text4511, 6]           He offended the majesty of |    God     |
+##   [text4512, 1]                                      |    God     |
+##   [text4512, 6]                  God cast him out of |   heaven   |
+##   [text4512, 8]               him out of heaven into |    hell    |
+##  [text4514, 10]             Eve were then created by |    God     |
+##   [text4519, 5]                 a great and generous |    God     |
+##   [text4520, 6]         condition imposed on them by |    God     |
+##  [text4527, 11]          inheritance which he by his |    sin     |
+##   [text4531, 8]                      as gods, nay as |    God     |
+##   [text4536, 8]                And then the voice of |    God     |
+##   [text4542, 2]                                  was |    God     |
+##  [text4543, 10]              He would send down from |   heaven   |
+##  [text4544, 10]           them once more children of |    God     |
+##   [text4545, 3]                           kingdom of |   heaven   |
+##   [text4565, 2]                                  the |    holy    |
+##   [text4566, 1]                                      |    hell    |
+##   [text4571, 5]                 eternity of torment: |    hell    |
+##  [text4577, 13]           the justice of an offended |    God     |
+##  [text4578, 11]       eternal punishment of sinners. |    Hell    |
+##   [text4581, 5]             is expressly designed by |    God     |
+##  [text4584, 10]                    prison. Not so in |    hell    |
+##   [text4588, 2]                              blessed |   saint    |
+##   [text4588, 4]                       blessed saint, |   saint    |
+##  [text4591, 16]                remember, the fire of |    hell    |
+##  [text4592, 11]                  , at the command of |    God     |
+##  [text4593, 16]                  , at the command of |    God     |
+##   [text4594, 3]                              fire of |    hell    |
+##   [text4600, 6]              give to the darkness of |    hell    |
+##   [text4608, 1]                                      |    hell    |
+##  [text4609, 10]          pestilential odour that, as |   saint    |
+##   [text4613, 7]               foulness of the air of |    hell    |
+##  [text4621, 14]              horror of the stench of |    hell    |
+##  [text4627, 16]          earthly fire was created by |    God     |
+##  [text4629, 12]                , whereas the fire of |    hell    |
+##   [text4630, 6]           quality and was created by |    God     |
+##   [text4635, 3]                             burns in |    hell    |
+##  [text4638, 11]                    ; but the fire of |    hell    |
+##  [text4643, 14]                  the lake of fire in |    hell    |
+##   [text4647, 1]                                      |    hell    |
+##  [text4649, 10]                  lost soul will be a |    hell    |
+##   [text4660, 8]             directly from the ire of |    God     |
+##   [text4671, 6]   offended majesty of the Omnipotent |    God     |
+##  [text4677, 13]                  hurtful to them. In |    hell    |
+##  [text4683, 13]      are full of blasphemies against |    God     |
+##   [text4685, 6]      which were their accomplices in |    sin     |
+##   [text4693, 6]             throats of the damned in |    hell    |
+##   [text4694, 9]            aided and abetted them in |    sin     |
+##   [text4696, 8]           suggestions led them on to |    sin     |
+##  [text4704, 15]           horrible these devils are. |   Saint    |
+##   [text4711, 5]                      who are made in |    hell    |
+##  [text4711, 14]              conscience. Why did you |    sin     |
+##   [text4714, 3]                         occasions of |    sin     |
+##  [text4718, 13]                evil ways and turn to |    God     |
+##   [text4721, 4]                          Time was to |    sin     |
+##  [text4725, 13]                    shall be no more. |    God     |
+##   [text4728, 8]            obey the precepts of your |    holy    |
+##   [text4733, 8]                   , sinned by such a |    sin     |
+##   [text4737, 7]            defiles the temple of the |    Holy    |
+##  [text4739, 10]           my dear little brothers in |   Christ   |
+##   [text4741, 7]        reckoning I pray fervently to |    God     |
+##   [text4758, 7]                       . It was true. |    God     |
+##  [text4758, 11]                  . God was almighty. |    God     |
+##   [text4760, 1]                                      |    God     |
+##   [text4768, 3]                                   -- |    Hell    |
+##   [text4768, 5]                             -- Hell! |    Hell    |
+##   [text4768, 7]                        - Hell! Hell! |    Hell    |
+##   [text4768, 9]                        ! Hell! Hell! |    Hell    |
+##  [text4768, 11]                        ! Hell! Hell! |    Hell    |
+##   [text4772, 4]                                -- On |    hell    |
+##  [text4780, 14]                     He had not died. |    God     |
+##   [text4809, 9]           back deeper into depths of |  contrite  |
+##  [text4812, 12]                those above, those in |   heaven   |
+##   [text4816, 5]                              -- All, |    God     |
+##   [text4826, 4]                         and thought, |    sin     |
+##   [text4826, 6]               and thought, sin after |    sin     |
+##   [text4832, 5]                   confess all, every |    sin     |
+##  [text4834, 11]               shame; and he besought |    God     |
+##   [text4847, 4]                   little brothers in |   Christ   |
+##   [text4849, 1]                                      |    Holy    |
+##  [text4855, 12]             , in our reflection upon |    hell    |
+##   [text4856, 3]                             what our |    holy    |
+##  [text4859, 13]                 which all who are in |    hell    |
+##   [text4861, 4]                spiritual torments of |    hell    |
+##   [text4863, 3]                                   -- |    Sin     |
+##  [text4866, 12]                 all that is pure and |    holy    |
+##  [text4866, 16]                   and holy, from the |    Holy    |
+##  [text4866, 17]                  holy, from the Holy |    God     |
+##   [text4867, 7]             . For this reason mortal |    sin     |
+##  [text4867, 11]            mortal sin is punished in |    hell    |
+##   [text4872, 5]                      all the others. |   Saint    |
+##   [text4876, 1]                                      |    God     |
+##   [text4876, 3]                                 God. |    God     |
+##   [text4879, 1]                                      |    hell    |
+##   [text4883, 2]                              towards |    God     |
+##  [text4884, 10]                souls long to be with |    God     |
+##  [text4884, 15]                    God. We come from |    God     |
+##   [text4885, 2]                                   by |    God     |
+##   [text4885, 7]                    God, we belong to |    God     |
+##  [text4885, 16]                His, inalienably His. |    God     |
+##  [text4895, 14]              its greatest good, from |    God     |
+##  [text4900, 13]               souls of the damned in |    hell    |
+##   [text4903, 6]     remorse from the putrefaction of |    sin     |
+##  [text4919, 12]               have lost the bliss of |   heaven   |
+##  [text4925, 12]                   , and moreover, as |   saint    |
+##   [text4926, 3]                                 out, |    God     |
+##  [text4926, 12]            them His own knowledge of |    sin     |
+##  [text4926, 16]                      of sin, so that |    sin     |
+##   [text4928, 1]                                      |    God     |
+##  [text4934, 14]              You had the minister of |    God     |
+##   [text4938, 2]                                   of |    holy    |
+##   [text4939, 9]                deeper in the mire of |    sin     |
+##  [text4939, 11]                     the mire of sin. |    God     |
+##   [text4943, 7]                you were to flood all |    hell    |
+##   [text4950, 8]              core of the wretches in |    hell    |
+##   [text4961, 4]                          another. In |    hell    |
+##   [text4972, 3]                          enormity of |    sin     |
+##   [text4972, 7]                of sin and the hatred |    God     |
+##   [text4975, 6]               the pain of intensity. |    Hell    |
+##   [text4978, 7]               the least the pains of |    hell    |
+##   [text4979, 5]            themselves become evil in |    hell    |
+##  [text4986, 13]                 their weight. But in |    hell    |
+##  [text4995, 13]              is what the holiness of |   heaven   |
+##  [text4997, 15]              of the innocent Lamb of |    God     |
+##   [text5002, 4]                      the eternity of |    hell    |
+##   [text5004, 6]             Even though the pains of |    hell    |
+##   [text5009, 9]        bear the manifold tortures of |    hell    |
+##   [text5039, 4]                                 -- A |    holy    |
+##   [text5039, 5]                            -- A holy |   saint    |
+##   [text5040, 5]               vouchsafed a vision of |    hell    |
+##  [text5042, 14]                and it seemed to this |   saint    |
+##  [text5044, 16]                      . Ever to be in |    hell    |
+##  [text5044, 22]                     , never to be in |   heaven   |
+##  [text5045, 10]             off from the presence of |    God     |
+##   [text5052, 7]                 the abyss of fire to |    God     |
+##  [text5062, 11]              those who die in mortal |    sin     |
+##   [text5063, 5]                  almighty and a just |    God     |
+##   [text5065, 7]                        - Yes, a just |    God     |
+##   [text5066, 1]                                      |    God     |
+##   [text5067, 2]                                   of |    hell    |
+##   [text5067, 7]           hell for a single grievous |    sin     |
+##   [text5070, 2]                               mortal |    sin     |
+##   [text5071, 3]                          even venial |    sin     |
+##   [text5074, 9]           he allowed a single venial |    sin     |
+##   [text5075, 3]                        single venial |    sin     |
+##   [text5076, 4]                 the great omnipotent |    God     |
+##  [text5076, 10]              could not do so because |    sin     |
+##  [text5077, 11]         transgression of His law and |    God     |
+##  [text5077, 15]                 and God would not be |    God     |
+##   [text5080, 4]                                 -- A |    sin     |
+##  [text5081, 16]                  from their glory. A |    sin     |
+##   [text5084, 4]                 consequences of that |    sin     |
+##  [text5084, 10]             the Only Begotten Son of |    God     |
+##  [text5088, 10]           my dear little brethren in |   Christ   |
+##  [text5088, 11]       dear little brethren in Christ |   Jesus    |
+##  [text5093, 10]                sorrow? Every word of |    sin     |
+##  [text5098, 14]           crucifies again the Son of |    God     |
+##   [text5101, 6]                         -- I pray to |    God     |
+##  [text5104, 12]                       you. I pray to |    God     |
+##   [text5107, 6]            chapel in the presence of |    God     |
+##  [text5110, 14]                 shame hold you back. |    God     |
+##   [text5115, 6]                  loved you as only a |    God     |
+##   [text5127, 5]                              -- O my |    God     |
+##   [text5128, 5]                              -- O my |    God     |
+##   [text5137, 9]              they displease Thee, my |    God     |
+##   [text5138, 9]              they displease Thee, my |    God     |
+##   [text5145, 5]                            -- by Thy |    holy    |
+##   [text5146, 5]                            -- by Thy |    holy    |
+##   [text5195, 7]                  flesh: and, praying |    God     |
+##   [text5198, 9]         had sinned so deeply against |   heaven   |
+##  [text5198, 12]     deeply against heaven and before |    God     |
+##  [text5205, 13]                   . How came it that |    God     |
+##   [text5241, 3]                              was his |    hell    |
+##   [text5241, 5]                        was his hell. |    God     |
+##  [text5241, 12]               allowed him to see the |    hell    |
+##  [text5242, 10]                bestial, malignant, a |    hell    |
+##  [text5246, 12]                      Air! The air of |   heaven   |
+##   [text5255, 6]            cocoon of yellowish haze. |   Heaven   |
+##   [text5265, 6]         BEDIMMED RADIANCE FOR HE WAS |    GOD     |
+##  [text5270, 10]         BREATHING PURITY, TELLING OF |   HEAVEN   |
+##   [text5273, 5]                       ON TO OUR LORD |   JESUS    |
+##  [text5276, 13]               , looking humbly up to |   heaven   |
+##  [text5283, 12]           before the minister of the |    Holy    |
+##  [text5292, 13]                   . He was in mortal |    sin     |
+##   [text5293, 2]                               mortal |    sin     |
+##   [text5307, 1]                                      |    God     |
+##   [text5314, 8]              He had to confess every |    sin     |
+##  [text5318, 11]                   would know. O dear |    God     |
+##  [text5323, 13]              the state of grace when |    God     |
+##  [text5328, 13]             their souls were seen by |    God     |
+##  [text5329, 16]                  radiant to see: and |    God     |
+##  [text5333, 14]           those souls were dearer to |    God     |
+##  [text5368, 11]         him were humble followers of |   Jesus    |
+##  [text5368, 13]           humble followers of Jesus. |   Jesus    |
+##   [text5371, 1]                                      |    God     |
+##   [text5376, 4]                        was foul with |    sin     |
+##   [text5377, 5]                  trust of those whom |   Jesus    |
+##  [text5377, 12]            in the mysterious ways of |    God     |
+##   [text5401, 6]          terrible crime but that one |    sin     |
+##  [text5414, 13]             one with others and with |    God     |
+##   [text5415, 8]             neighbour. He would love |    God     |
+##  [text5416, 11]                 others and be happy. |    God     |
+##  [text5420, 14]                  always a child, for |    God     |
+##   [text5422, 5]                       a sad thing to |    sin     |
+##   [text5422, 8]                    thing to sin. But |    God     |
+##   [text5429, 9]        crucifix suspended above him. |    God     |
+##   [text5432, 9]                     It was true. But |    God     |
+##  [text5442, 16]              prayed of the priest to |   bless    |
+##   [text5506, 4]                         give up that |    sin     |
+##  [text5506, 10]                   . It is a terrible |    sin     |
+##  [text5510, 10]              long as you commit that |    sin     |
+##   [text5511, 7]             be worth one farthing to |    God     |
+##   [text5513, 1]                                      |    sin     |
+##  [text5514, 17]               . And you will promise |    God     |
+##   [text5515, 5]                      now that by His |    holy    |
+##   [text5516, 2]                               wicked |    sin     |
+##  [text5516, 11]          make that solemn promise to |    God     |
+##   [text5524, 1]                                      |    hell    |
+##   [text5525, 8]              hates our Lord. Promise |    God     |
+##   [text5526, 1]                                      |    sin     |
+##   [text5526, 6]          sin, that wretched wretched |    sin     |
+##   [text5532, 3]                                   -- |    God     |
+##   [text5532, 4]                               -- God |   bless    |
+##   [text5534, 6]                  He knelt to say his |  penance   |
+##   [text5535, 5]              his prayers ascended to |   heaven   |
+##  [text5540, 10]               . He had confessed and |    God     |
+##   [text5541, 4]                        made fair and |    holy    |
+##   [text5541, 8]                  and holy once more, |    holy    |
+##   [text5543, 8]               be beautiful to die if |    God     |
+##   [text5572, 6]              his tongue the host and |    God     |
+##   [text5589, 9]                to the mystery of the |    Holy    |
+##   [text5590, 1]                                      |    Holy    |
+##  [text5590, 12]        Guardian Angels, Wednesday to |   saint    |
+##   [text5592, 2]                            Suffering |   Jesus    |
+##  [text5594, 12]              in the presence of some |    holy    |
+##   [text5612, 8]             was not everlasting, his |  penance   |
+##   [text5620, 3]                         radiantly in |   heaven   |
+##  [text5623, 10]  purchase start forth immediately in |   heaven   |
+##   [text5633, 8]                   and in love of the |    Holy    |
+##   [text5638, 5]                   seven gifts of the |    Holy    |
+##  [text5649, 14]                    a mighty wind, to |    sin     |
+##   [text5650, 4]                           Whom was a |    sin     |
+##   [text5651, 5]                          to Whom, as |    God     |
+##   [text5658, 5]                  Eternal Son and the |    Holy    |
+##   [text5660, 9]             was the simple fact that |    God     |
+##  [text5677, 14]               reality of love, since |    God     |
+##   [text5735, 6]             He had no temptations to |    sin     |
+##   [text5756, 7]        old neglected book written by |   saint    |
+##   [text5788, 7]                that he had prayed to |    God     |
+##   [text5790, 1]                                      |    God     |
+##   [text5799, 3]                            name some |    sin     |
+##   [text5803, 9]              . A restless feeling of |   guilt    |
+##  [text5806, 10]                   him by the fear of |    hell    |
+##   [text5808, 4]                       sorrow for his |    sin     |
+##  [text5809, 11]           had sincere sorrow for his |    sin     |
+##   [text5844, 6]        and of the friendship between |   saint    |
+##   [text5844, 9]  friendship between saint Thomas and |   saint    |
+##   [text5910, 1]                                      |    sin     |
+##   [text5925, 3]                             a mortal |    sin     |
+##  [text5925, 16]             say, a deliberate mortal |    sin     |
+##   [text5970, 6]               two or three boys whom |    God     |
+##   [text5975, 8]             boy in this college whom |    God     |
+##   [text5981, 4]                    that the Almighty |    God     |
+##   [text5982, 9]               power of the priest of |    God     |
+##   [text5983, 1]                                      |   heaven   |
+##   [text5983, 4]                           heaven, no |   saint    |
+##   [text5984, 4]                          a priest of |    God     |
+##   [text5985, 2]                                 from |    sin     |
+##   [text5986, 3]                         creatures of |    God     |
+##   [text5987, 8]                  , to make the great |    God     |
+##  [text5987, 10]                make the great God of |   Heaven   |
+##   [text6028, 3]                              was the |    sin     |
+##  [text6028, 10]             Simon Magus and what the |    sin     |
+##  [text6028, 13]             what the sin against the |    Holy    |
+##  [text6034, 11]  rendered immune mysteriously at his | ordination |
+##  [text6036, 10]                   altar. No touch of |    sin     |
+##  [text6037, 14]                    host; no touch of |    sin     |
+##   [text6044, 2]                             Almighty |    God     |
+##   [text6044, 8]                may reveal to you His |    holy    |
+##   [text6045, 6]                make a novena to your |    holy    |
+##   [text6045, 8]           novena to your holy patron |   saint    |
+##   [text6046, 3]                        powerful with |    God     |
+##   [text6046, 6]              powerful with God, that |    God     |
+##   [text6050, 2]                                   of |    Holy    |
+##   [text6054, 9]                  But we will pray to |    God     |
+##  [text6127, 10]               world were its ways of |    sin     |
+##  [text6255, 11]                 between: the oils of | ordination |
+##   [text6278, 1]                                      |  contrite  |
+##   [text6491, 4]                          -- Heavenly |    God     |
+##   [text6499, 1]                                      |    holy    |
+##   [text6628, 3]                                   -- |   Jesus    |
+##   [text6628, 6]                          -- Jesus! O |   Jesus    |
+##   [text6628, 8]                      Jesus! O Jesus! |   Jesus    |
+##  [text6849, 11]          the Fearless Thurles and by |    God     |
+##   [text6854, 6]               caman and I declare to |    God     |
+##  [text6855, 11]                      . Oh, honest to |    God     |
+##  [text6921, 15]                     day, sir, please |    God     |
+##  [text7011, 11]                        is a good. In |    hell    |
+##  [text7027, 14]             for the greater glory of |    God     |
+##   [text7086, 1]                                      |    God     |
+##   [text7140, 3]                         salvation in |   Jesus    |
+##  [text7146, 12]             or the procession of the |    Holy    |
+##   [text7147, 6]                   Ghost? Or had Lord |   Christ   |
+##   [text7165, 7]                  are the words HOME, |   CHRIST   |
+##  [text7385, 10]               the face of a besotted |   Christ   |
+##   [text7469, 4]                                -- By |    hell    |
+##  [text7547, 12]                    If we must have a |   Jesus    |
+##   [text7548, 1]                                      |   Jesus    |
+##   [text7550, 4]                                -- By |    hell    |
+##   [text7566, 7]                  - Do you believe in |   Jesus    |
+##   [text7569, 1]                                      |   Jesus    |
+##  [text7603, 14]                  didn't see that. By |    hell    |
+##  [text7626, 14]           and children somewhere. By |    hell    |
+##  [text7661, 10]              I declare to the living |    God     |
+##   [text7763, 3]                            honest to |    God     |
+##  [text8055, 14]             return to our old friend |   saint    |
+##  [text8284, 14]                 The artist, like the |    God     |
+##   [text8381, 3]                         falling from |   heaven   |
+##   [text8543, 4]                       lay upwards to |   heaven   |
+##  [text8573, 10]          the knowledge of it through |    sin     |
+##   [text8664, 4]                           Thoth, the |    god     |
+##   [text8832, 1]                                      |    hell    |
+##   [text8836, 4]                                -- By |    hell    |
+##   [text8843, 9]                  be dining there. By |    hell    |
+##   [text8986, 2]                                   to |    God     |
+##  [text8987, 15]             knowing that he stood on |    holy    |
+##   [text8988, 5]                      ground and in a |    holy    |
+##   [text9043, 1]                                      |    God     |
+##  [text9120, 12]                 bloody ape like you. |    God     |
+##   [text9137, 1]                                      |   Jesus    |
+##   [text9138, 2]                                   to |    hell    |
+##   [text9142, 9]                 why are they sent to |    hell    |
+##  [text9142, 11]                 they sent to hell if |   Jesus    |
+##   [text9155, 3]                                   -- |   Saint    |
+##  [text9155, 12]   about unbaptized children going to |    hell    |
+##  [text9165, 15]             fine invention too. Like |    hell    |
+##   [text9178, 3]                                   -- |    Hell    |
+##   [text9179, 4]                            of Satan. |    Hell    |
+##   [text9379, 7]                    - I tried to love |    God     |
+##  [text9380, 14]                will with the will of |    God     |
+##   [text9459, 8]               The church calls him a |   saint    |
+##   [text9466, 3]                                   -- |   Jesus    |
+##  [text9470, 15]                 , Cranly asked, that |   Jesus    |
+##   [text9474, 1]                                      |   Jesus    |
+##  [text9495, 10]           religion is false and that |   Jesus    |
+##   [text9496, 1]                                      |    God     |
+##   [text9499, 1]                                      |    God     |
+##   [text9503, 9]                  blood of the son of |    God     |
+##  [text9521, 13]               Cranly asked, that the |    God     |
+##   [text9525, 4]                               -- The |    God     |
+##   [text9746, 8]            Puzzled for the moment by |   saint    |
+##   [text9762, 1]                                      |   Jesus    |
+##  [text9766, 10]               church by back door of |    sin     |
+##                                          
+##  my expectation.                         
+##  could do that. He                       
+##  . God was God's                         
+##  was God's                               
+##  and that                                
+##  and said DIEU then                      
+##  knew at once that it                    
+##  in all the different                    
+##  understood what all the people          
+##  remained always the                     
+##  and God's real name was                 
+##  .                                       
+##  !                                       
+##  smell. It                               
+##  peasants. They breathed behind          
+##                                          
+##  OUR LORD.                               
+##  when he died. He                        
+##  bless my father and my                  
+##  my father and my mother                 
+##  bless my little brothers and            
+##  my little brothers and sisters          
+##  bless Dante and Uncle Charles           
+##  Dante and Uncle Charles and             
+##  when                                    
+##  enough or why could he                  
+##  bless him.                              
+##  him.                                    
+##  us, O Lord,                             
+##  our                                     
+##                                          
+##  , Mr Casey said,                        
+##  Ghost.                                  
+##  and religion and priests in             
+##  , they look it!                         
+##  have mercy on him!                      
+##  , MARY AND JOSEPH!                      
+##  SAVE THE QUEEN at the                   
+##  , FOR THEY ARE THE                      
+##  , he cried, I                           
+##  and morality and religion               
+##  and religion before everything!         
+##  and religion                            
+##  for                                     
+##  for Ireland! he cried                   
+##  In Ireland.                             
+##  !                                       
+##  , I say!                                
+##  ! We won! We                            
+##  place. He remembered the                
+##  place. The boy that                     
+##  , to go in there                        
+##  was put on the altar                    
+##  was                                     
+##  even to touch it.                       
+##  : it thrilled him to                    
+##  too: but it was                         
+##  communion in the chapel he              
+##  communion he had smelt a                
+##  communion.                              
+##  for Father Arnall to be                 
+##  was and would not do                    
+##  Ignatius Loyola holding an open         
+##  Francis                                 
+##                                          
+##  Stanislaus Kostka, saint Aloysius       
+##  Aloysius Gonzago, and Blessed           
+##  .                                       
+##  might send him back a                   
+##  ( God forgive me)                       
+##  forgive me) not half                    
+##  , like gamecocks.                       
+##  Paul, I forgot about                    
+##  on me any more,                         
+##  nor saint, began with                   
+##  , began with a shiver                   
+##  he was! The                             
+##  , I don't                               
+##  ! asserted Mr Dedalus.                  
+##  , Johnny, said Mr                       
+##  we lived so long and                    
+##  and gazing on the earth                 
+##  help us! he said                        
+##  , they wouldn't be seen                 
+##  , that his life had                     
+##  encounter he had then imagined          
+##                                          
+##  with him and to                         
+##  . He felt some dark                     
+##  of                                      
+##  , softer than sound or                  
+##  by                                      
+##  , spreading abroad the bale-fire        
+##                                          
+##  alone, by every                         
+##  he multiplied his guilt and             
+##  and his punishment. His                 
+##  even one prayer at night                
+##  , his loveless awe of                   
+##  , told him that his                     
+##  , which had covered him                 
+##  , had led him                           
+##  from him and to repent                  
+##  AND INFUSING PEACE, it                  
+##  James which says that he                
+##  to the poor of heart                    
+##  Christ be present body and              
+##  be present body and blood               
+##  Christ or a part only                   
+##  or a part only of                       
+##  Christ still present under their        
+##  still present under their               
+##  and as man?                             
+##                                          
+##  Francis                                 
+##  Ignatius. They met in                   
+##  Ignatius to preach to the               
+##  but he                                  
+##  , saint Francis                         
+##  Francis                                 
+##  !                                       
+##  in a single month!                      
+##  who has great power in                  
+##  , remember: power to                    
+##  . A great                               
+##  , saint Francis Xavier!                 
+##  Francis Xavier! A great                 
+##  FOR EVER-- words                        
+##  , from the book of                      
+##  Ghost. Amen.                            
+##  , for                                   
+##  also of your college,                   
+##  Francis                                 
+##  . Time has gone on                      
+##  to another life and to                  
+##  is honoured by                          
+##  Mother the                              
+##  and in the eyes of                      
+##  religion and to                         
+##  , and heaven. We                        
+##  . We shall try to                       
+##  will and to save our                    
+##  angels to set a good                    
+##                                          
+##  for having granted you this             
+##  grace                                   
+##  , I fervently trust and                 
+##  through the merits of His               
+##  communion on                            
+##  Francis's day of this year              
+##                                          
+##  and sinner alike, may                   
+##  . Help me by your                       
+##  , and heaven. He                        
+##  . He who remembers these                
+##  for ever. He who                        
+##                                          
+##  to stare upon.                          
+##  , who had long been                     
+##  and to enjoy, time                      
+##  and at the                              
+##  church, time was to                     
+##  after sin and                           
+##  and                                     
+##  would then come forth from              
+##  . He would reward the                   
+##  .                                       
+##  were                                    
+##  , no longer the                         
+##  of Nazareth, no longer                  
+##  Omnipotent, God Everlasting.            
+##  Everlasting. He speaks:                 
+##  , how will it fare                      
+##                                          
+##  of our                                  
+##  . Death, a cause                        
+##  sacrament frequently and performing good
+##  , foul and secret,                      
+##  was aimed. The preacher's               
+##  . Yes, the preacher                     
+##  into the light. The                     
+##  and the Blessed Virgin were             
+##  was too great and stern                 
+##  . But he imagined that                  
+##  , they stood together,                  
+##  . You have erred but                    
+##  HAS ENLARGED ITS SOUL AND               
+##  Jesus, from the                         
+##  , from the                              
+##  Ghost. Amen.                            
+##  in order that the                       
+##  left vacant by the fall                 
+##  : he fell and was                       
+##  . What his sin was                      
+##  was we cannot                           
+##  of pride, the sinful                    
+##  by the sinful thought of                
+##  cast him out of heaven                  
+##  into hell for ever.                     
+##  for ever.                               
+##  and placed in Eden,                     
+##  could do for them was                   
+##  : obedience to His word                 
+##  had forfeited                           
+##  Himself. Eve yielded to                 
+##  was heard in that garden                
+##  ! He took pity on                       
+##  One who would                           
+##  and heirs to the                        
+##  : and that One,                         
+##  catholic church against which,          
+##  shall not prevail. He                   
+##  .                                       
+##  has                                     
+##  is a                                    
+##  to punish those who refused             
+##  . There, by reason                      
+##  , saint Anselm, writes                  
+##  Anselm, writes in his                   
+##  gives                                   
+##  , the fire of the                       
+##  , the                                   
+##  , while retaining the intensity         
+##  which is to last not                    
+##  with its intolerable stench;            
+##  Bonaventure                             
+##  . Imagine some foul and                 
+##  .                                       
+##                                          
+##  is of another                           
+##  to torture and punish the               
+##  is a substance which is                 
+##  has this property,                      
+##  is                                      
+##  it would be burned up                   
+##  unto itself, the boundless              
+##  , working not of its                    
+##  and fanned into everlasting and         
+##  all                                     
+##  and                                     
+##  . In olden times it                     
+##  when they behold in their               
+##  , those whose words sowed               
+##  , those whose eyes tempted              
+##                                          
+##  the voices of conscience.               
+##  ? Why did                               
+##  ? Why did you not                       
+##  who only                                
+##  in secrecy, to indulge                  
+##  spoke to you by so                      
+##  church nor attend to your               
+##  as alone was compatible with            
+##  Ghost, defiles and pollutes             
+##  , may it never be                       
+##  that not a single soul                  
+##  was almighty. God could                 
+##  could call him now,                     
+##  had called him. Yes                     
+##  ! Hell! Hell!                           
+##  ! Hell! Hell!                           
+##  ! Hell! Hell!                           
+##  ! Hell!                                 
+##  !                                       
+##  .                                       
+##  had spared him                          
+##  peace, no longer able                   
+##  , would see what                        
+##  ! All, all!                             
+##  after sin. How?                         
+##  . How? How?                             
+##  of deed and thought,                    
+##  humbly not to be                        
+##  , from the Book of                      
+##  Ghost. Amen.                            
+##  , to make                               
+##  founder calls in his book               
+##  endure.                                 
+##  .                                       
+##  , remember, is a                        
+##  , from the Holy God                     
+##  God                                     
+##                                          
+##  is punished in hell by                  
+##  by two                                  
+##  Thomas, the greatest doctor             
+##  . God, remember,                        
+##  , remember, is a                        
+##  , for their greater torment             
+##  as towards the centre of                
+##  . We come from God                      
+##  , we live                               
+##  , we belong to God                      
+##  : we are His,                           
+##  loves with a                            
+##  , and to                                
+##  is                                      
+##  , the sting of conscience               
+##  for the dross                           
+##  Augustine points                        
+##  will impart to them His                 
+##  , so that sin will                      
+##  will                                    
+##  Himself. They will behold               
+##  to                                      
+##  religion, you turned your               
+##  . God appealed to you                   
+##  appealed to you,                        
+##  with your tears if you                  
+##  , so that filled with                   
+##  , on the contrary,                      
+##  and the hatred God bears                
+##  bears to it.                            
+##  is the centre of evils                  
+##  . Nay, things which                     
+##  . Company, elsewhere a                  
+##  the torments                            
+##  ,                                       
+##  ,                                       
+##  . Eternity! O,                          
+##  were not so terrible as                 
+##  for ever? For ever                      
+##  saint( one of our                       
+##  ( one of our own                        
+##  . It seemed to him                      
+##                                          
+##  , never to be in                        
+##  ;                                       
+##  , never to enjoy the                    
+##  for an instant, a                       
+##  by an                                   
+##  .                                       
+##  ! Men, reasoning always                 
+##  should mete out an everlasting          
+##  for a single grievous sin               
+##  . They reason thus because              
+##  . They reason thus because              
+##  is of such a foul                       
+##  to pass unpunished, a                   
+##  , a lie, an                             
+##  could not do so because                 
+##  , be it in thought                      
+##  would not be God if                     
+##  if He                                   
+##  , an instant of rebellious              
+##  ,                                       
+##  the Only Begotten Son of                
+##  came down to                            
+##  Jesus, will we then                     
+##  , will we then offend                   
+##  is a wound in His                       
+##  and                                     
+##  that my poor words may                  
+##  , and do you pray                       
+##  . He is there in                        
+##  is still                                
+##  can love. His arms                      
+##  !--                                     
+##  !--                                     
+##  --                                      
+##  --                                      
+##  grace--                                 
+##  grace--                                 
+##  timidly to forgive him his              
+##  and before God that he                  
+##  that he                                 
+##  had not                                 
+##  . God had allowed him                   
+##  had allowed him to see                  
+##  reserved for his                        
+##  of lecherous goatish fiends.            
+##  ! He                                    
+##  was still and faintly luminous          
+##  . SO HE CAME HIMSELF                    
+##  AND INFUSING                            
+##  , GUIDE US HOME.                        
+##  , he                                    
+##  Ghost and tell                          
+##  . Even once was a                       
+##  . It could happen in                    
+##  Who had made all things                 
+##  . How could he utter                    
+##  !                                       
+##  looked upon                             
+##  ; and if                                
+##                                          
+##  than                                    
+##  . Jesus too                             
+##  too                                     
+##  to poor fishermen, teaching             
+##  and he dared not ask                    
+##  , in the mysterious ways                
+##  , had called                            
+##  ! Had it been murder                    
+##  . He would                              
+##  who had made and loved                  
+##  would look down on                      
+##  loved                                   
+##  . But God was merciful                  
+##  was merciful to poor sinners            
+##  could see that he was                   
+##  had promised to forgive him             
+##                                          
+##  . It is a terrible                      
+##  . It kills the body                     
+##  , my poor child,                        
+##  . Pray to our mother                    
+##  comes into your mind.                   
+##                                          
+##  grace you will never offend             
+##  . You will make that                    
+##  , will you not?                         
+##  when he tempts you to                   
+##  now that you will give                  
+##  , that wretched wretched sin            
+##  .                                       
+##  bless you, my child                     
+##  you, my child.                          
+##  , praying in a corner                   
+##  from his purified heart like            
+##  had pardoned him. His                   
+##  once more, holy and                     
+##  and happy.                              
+##  so willed. It was                       
+##  would enter his purified body           
+##  Trinity, Monday to the                  
+##  Ghost, Tuesday to the                   
+##  Joseph,                                 
+##  , Saturday to the Blessed               
+##                                          
+##  might avail no more than                
+##  ; and at times his                      
+##  , not as a                              
+##  Ghost Who had sanctified him            
+##  Ghost might descend upon his            
+##  against                                 
+##  beyond forgiveness, the eternal         
+##  , the priests offered up                
+##  Spirit proceeding out of Father         
+##  had loved                               
+##                                          
+##  mortally. It surprised him              
+##  Alphonsus Liguori, with fading          
+##  at every temptation and that            
+##  was obliged to give it                  
+##  of his past life before                 
+##  would always be present                 
+##  had not been good?                      
+##  ? But the surest sign                   
+##  was, he knew,                           
+##  Thomas and saint Bonaventure.           
+##  Bonaventure. The                        
+##  , it was they who                       
+##  in his life, that                       
+##  .                                       
+##  calls to the religious life             
+##  designs to call to Himself              
+##  can bestow upon a man                   
+##  . No angel or archangel                 
+##  , no saint, not                         
+##  , not even the Blessed                  
+##  : the power of the                      
+##  , the power of exorcism                 
+##  the evil spirits that have              
+##  of Heaven come down upon                
+##  come down upon the altar                
+##  of Simon Magus and what                 
+##  against the Holy Ghost for              
+##  Ghost for                               
+##  by the                                  
+##  would linger upon the hands             
+##  would                                   
+##  may reveal to you His                   
+##  will. And let you                       
+##  patron saint, the first                 
+##  , the first martyr,                     
+##  , that God may enlighten                
+##  may enlighten your mind.                
+##  Orders is one of those                  
+##  together.                               
+##  . He would fall.                        
+##  would never                             
+##  hearts, it might be                     
+##  ! cried Stephen's soul,                 
+##  silence of his ecstasy.                 
+##  ! O Jesus! Jesus                        
+##  ! Jesus!                                
+##  !                                       
+##  , Stevie, that                          
+##  he was within an aim's                  
+##  , if the crook of                       
+##  , the girl answered                     
+##  , however, it is                        
+##  , without joy                           
+##  ?                                       
+##  only and abhorring the vain             
+##                                          
+##  touched him and bidden him              
+##  , ALE, MASTER,                          
+##  .                                       
+##  , that's a queer notion                 
+##  let us have a legitimate                
+##  .                                       
+##  , that's a good one                     
+##  ? I believe in man                      
+##  ?                                       
+##  , I saw that at                         
+##  , I                                     
+##  if you say another word                 
+##  , Stevie, I was                         
+##  Thomas                                  
+##  of                                      
+##  .                                       
+##  all strewn with scarlet flowers         
+##  , an innocence which she                
+##  of writers, writing with                
+##  , I think that's a                      
+##  , I'm delighted with that               
+##  , I think they all                      
+##  in a wood near Malahide                 
+##                                          
+##  hour. And when two                      
+##  with the other animals on               
+##  help them!                              
+##  suffered the children to come           
+##  if they die unbaptized?                 
+##  if Jesus said they were                 
+##  said they were all to                   
+##  Augustine says that about unbaptized    
+##  ,                                       
+##  .                                       
+##  , Temple said. I                        
+##  is Roman, like the                      
+##  , he said at length                     
+##  instant                                 
+##  , Stephen objected.                     
+##  , too, seems to                         
+##  was not                                 
+##  himself.                                
+##  was not the son of                      
+##  ?                                       
+##  than a son of Mary                      
+##  and not a wafer of                      
+##  of the Roman catholics                  
+##  of the Roman catholics could            
+##  John at the Latin gate                  
+##  and Papa against those between          
+##  and re-enter through the
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kwic}\NormalTok{(TM_}\DecValTok{74}\NormalTok{,}\DataTypeTok{pattern =} \KeywordTok{c}\NormalTok{(}\StringTok{"god"}\NormalTok{,}\StringTok{"bless"}\NormalTok{,}\StringTok{"saint"}\NormalTok{,}\StringTok{"holy"}\NormalTok{,}\StringTok{"sin"}\NormalTok{,}\StringTok{"contrite"}\NormalTok{,}\StringTok{"hell"}\NormalTok{,}\StringTok{"guilt"}\NormalTok{,}\StringTok{"heaven"}\NormalTok{,}\StringTok{"ordination"}\NormalTok{,}\StringTok{"penance"}\NormalTok{),}\DataTypeTok{window=}\DecValTok{5}\NormalTok{,}\DataTypeTok{valuetype =} \StringTok{"glob"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                                        
+##   [text528, 11]                            . I'm a laying up |  sin   |
+##   [text1068, 8]                  itself when it came without |  sin   |
+##  [text1187, 12]                          , and her lips pray |  God   |
+##  [text1232, 12] maid-servant's discordant voice profaned the |  holy  |
+##   [text1283, 2]                                           of | heaven |
+##  [text3008, 11]                        you're an angel. I'll | bless  |
+##  [text3220, 13]                           the hogs, but laws | bless  |
+##   [text3513, 2]                                            " |  hell  |
+##  [text3938, 10]          sudden and special thunderbolt from | heaven |
+##   [text4220, 7]                                be-- and laws | bless  |
+##   [text4239, 3]                                      him and | bless  |
+##   [text4244, 7]                          the house down. And |  God   |
+##  [text4786, 14]                           his voice:" Praise |  God   |
+##   [text4800, 6]           expressed the most gratefulness to |  God   |
+##   [text4966, 1]                                              |  God   |
+##   [text5106, 4]                                town but that | Saint  |
+##  [text5392, 12]                      after face for signs of | guilt  |
+##   [text5603, 7]               through the cloudy chambers of | heaven |
+##   [text7231, 3]                                         " By |  God   |
+##                             
+##  and suffering for us both  
+##  through virtuous effort.   
+##  to give her back           
+##                             
+##  . Blessed are they that    
+##  you for this the longest   
+##  you, he just lifts         
+##  following after." But      
+##  . Then at                  
+##  me, to think I             
+##  him for it."               
+##  forgive me, I cracked      
+##  from                       
+##  and affection for himself. 
+##  and Father of us all       
+##  Louis smarty that thinks he
+##  .                          
+##  , seeming to scorn the     
+##  , that's--"
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{9}
+\tightlist
+\item
+  Consider the bootstrapping of the texts we used to calculate the
+  standard errors of the Flesch reading scores of Irish budget speeches
+  in Recitation 4.
+\end{enumerate}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  Obtain the UK Conservative Party's manifestos from quanteda.corpora.
+  Generate es- timates of the FRE scores of these manifestos over time,
+  using sentence-level bootstraps instead of the speech-level bootstraps
+  used in Recitation 4. Include a graph of these estimates.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#head(docvars(data_corpus_ukmanifestos), 10) # have a glance of data}
+
+\CommentTok{#select conservative party ones}
+\NormalTok{conserv =}\StringTok{ }\KeywordTok{corpus_subset}\NormalTok{(data_corpus_ukmanifestos, Party }\OperatorTok{==}\StringTok{ 'Con'}\NormalTok{)}
+\NormalTok{conserv_sentence =}\StringTok{ }\KeywordTok{corpus_reshape}\NormalTok{(conserv, }\DataTypeTok{to =} \StringTok{"sentences"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{docvars}\NormalTok{(conserv), }\DecValTok{10}\NormalTok{) }\CommentTok{# see the selected data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                     Country Type Year Language Party
+## UK_natl_1945_en_Con      UK natl 1945       en   Con
+## UK_natl_1950_en_Con      UK natl 1950       en   Con
+## UK_natl_1951_en_Con      UK natl 1951       en   Con
+## UK_natl_1955_en_Con      UK natl 1955       en   Con
+## UK_natl_1959_en_Con      UK natl 1959       en   Con
+## UK_natl_1964_en_Con      UK natl 1964       en   Con
+## UK_natl_1966_en_Con      UK natl 1966       en   Con
+## UK_natl_1970_en_Con      UK natl 1970       en   Con
+## UK_natl_1974_en_Con      UK natl 1974       en   Con
+## UK_natl_1979_en_Con      UK natl 1979       en   Con
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# convert corpus to df }
+\NormalTok{conserv_df <-}\StringTok{ }\NormalTok{conserv_sentence}\OperatorTok{$}\NormalTok{documents }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(texts,Party, Year)}
+\CommentTok{#%>% mutate(Year = as.integer(Year))}
+\CommentTok{# Let's filter out any NAs}
+\NormalTok{conserv_df <-}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(conserv_df)}
+
+\CommentTok{# FRE}
+\NormalTok{flesch_conserv <-}\StringTok{ }\NormalTok{conserv_df}\OperatorTok{$}\NormalTok{texts }\OperatorTok{%>%}\StringTok{ }\KeywordTok{textstat_readability}\NormalTok{(}\DataTypeTok{measure =} \StringTok{"Flesch"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{group_by}\NormalTok{(conserv_df}\OperatorTok{$}\NormalTok{Year) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{mean_flesch =} \KeywordTok{mean}\NormalTok{(Flesch)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{setNames}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"Year"}\NormalTok{,}\StringTok{"mean"}\NormalTok{))}\OperatorTok{%>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(Year)}
+
+
+
+\CommentTok{#plot }
+\KeywordTok{ggplot}\NormalTok{(flesch_conserv, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ mean, }\DataTypeTok{x =}\NormalTok{ Year,  }\DataTypeTok{colour =}\NormalTok{ Year)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{theme_bw}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\KeywordTok{floor}\NormalTok{(}\KeywordTok{min}\NormalTok{(flesch_conserv}\OperatorTok{$}\NormalTok{mean)), }\KeywordTok{ceiling}\NormalTok{(}\KeywordTok{max}\NormalTok{(flesch_conserv}\OperatorTok{$}\NormalTok{mean)), }\DataTypeTok{by =} \DecValTok{5}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{""}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Mean Fleisch Score by Year"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Yunhe_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Report the means of the bootstrapped results and the means observed in
+  the data. Discuss the contrast.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{boot_flesch <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(ydata)\{}
+\NormalTok{  N <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(ydata)}
+\NormalTok{  bootstrap_sample <-}\StringTok{ }\KeywordTok{sample_n}\NormalTok{(ydata, N, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  readability_results <-}\StringTok{ }\KeywordTok{textstat_readability}\NormalTok{(bootstrap_sample}\OperatorTok{$}\NormalTok{texts, }\DataTypeTok{measure =} \StringTok{"Flesch"}\NormalTok{)}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{mean}\NormalTok{(readability_results}\OperatorTok{$}\NormalTok{Flesch))}
+\NormalTok{\}}
+
+
+\CommentTok{# apply function to each year}
+\NormalTok{iters <-}\StringTok{ }\DecValTok{10}
+\NormalTok{Years =}\StringTok{ }\KeywordTok{unique}\NormalTok{(conserv_df}\OperatorTok{$}\NormalTok{Year)}
+
+\NormalTok{boot_flesch_by_year <-}\StringTok{ }\KeywordTok{pblapply}\NormalTok{(Years, }\ControlFlowTok{function}\NormalTok{(x)\{}
+\NormalTok{  sub_data <-}\StringTok{ }\NormalTok{conserv_df[conserv_df}\OperatorTok{$}\NormalTok{Year }\OperatorTok{==}\StringTok{ }\NormalTok{x,]}
+\NormalTok{  output_flesch <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{iters, }\ControlFlowTok{function}\NormalTok{(i) }\KeywordTok{boot_flesch}\NormalTok{(sub_data))}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(output_flesch))}
+  \CommentTok{#return(sub_data)}
+\NormalTok{\})}
+\KeywordTok{names}\NormalTok{(boot_flesch_by_year) <-}\StringTok{ }\NormalTok{Years}
+
+\CommentTok{# compute mean and std.errors}
+\NormalTok{year_means <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(boot_flesch_by_year, mean) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unname}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unlist}\NormalTok{()}
+\NormalTok{year_ses <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(boot_flesch_by_year, sd) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unname}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unlist}\NormalTok{() }\CommentTok{# bootstrap standard error = sample standard deviation bootstrap distribution}
+
+\CommentTok{# Plot results--party}
+\NormalTok{plot_dt <-}\StringTok{ }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{Year =}\NormalTok{ Years, }\DataTypeTok{mean =}\NormalTok{ year_means, }\DataTypeTok{ses =}\NormalTok{ year_ses)}
+
+
+\CommentTok{# confidence intervals}
+\NormalTok{interval1 <-}\StringTok{ }\OperatorTok{-}\KeywordTok{qnorm}\NormalTok{((}\DecValTok{1}\OperatorTok{-}\FloatTok{0.9}\NormalTok{)}\OperatorTok{/}\DecValTok{2}\NormalTok{)   }\CommentTok{# 90% multiplier}
+\NormalTok{interval2 <-}\StringTok{ }\OperatorTok{-}\KeywordTok{qnorm}\NormalTok{((}\DecValTok{1}\OperatorTok{-}\FloatTok{0.95}\NormalTok{)}\OperatorTok{/}\DecValTok{2}\NormalTok{)  }\CommentTok{# 95% multiplier}
+
+\CommentTok{# ggplot point estimate + variance}
+\KeywordTok{ggplot}\NormalTok{(plot_dt, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{colour =}\NormalTok{ Year)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_linerange}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Year, }\DataTypeTok{ymin =}\NormalTok{ mean }\OperatorTok{-}\StringTok{ }\NormalTok{ses}\OperatorTok{*}\NormalTok{interval1, }\DataTypeTok{ymax =}\NormalTok{ mean }\OperatorTok{+}\StringTok{ }\NormalTok{ses}\OperatorTok{*}\NormalTok{interval1), }\DataTypeTok{lwd =} \DecValTok{1}\NormalTok{, }\DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DataTypeTok{width =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_pointrange}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Year, }\DataTypeTok{y =}\NormalTok{ mean, }\DataTypeTok{ymin =}\NormalTok{ mean }\OperatorTok{-}\StringTok{ }\NormalTok{ses}\OperatorTok{*}\NormalTok{interval2, }\DataTypeTok{ymax =}\NormalTok{ mean }\OperatorTok{+}\StringTok{ }\NormalTok{ses}\OperatorTok{*}\NormalTok{interval2), }\DataTypeTok{lwd =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DataTypeTok{width =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{), }\DataTypeTok{shape =} \DecValTok{21}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"WHITE"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{theme_bw}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\KeywordTok{floor}\NormalTok{(}\KeywordTok{min}\NormalTok{(plot_dt}\OperatorTok{$}\NormalTok{mean)), }\KeywordTok{ceiling}\NormalTok{(}\KeywordTok{max}\NormalTok{(plot_dt}\OperatorTok{$}\NormalTok{mean)), }\DataTypeTok{by =} \DecValTok{2}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{""}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Mean Fleisch Score by Year"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Yunhe_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flesch_conserv}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 16 x 2
+##     Year  mean
+##    <int> <dbl>
+##  1  1945  49.2
+##  2  1950  44.1
+##  3  1951  52.8
+##  4  1955  49.2
+##  5  1959  48.6
+##  6  1964  45.8
+##  7  1966  46.7
+##  8  1970  46.1
+##  9  1974  42.6
+## 10  1979  47.5
+## 11  1983  47.8
+## 12  1987  46.7
+## 13  1992  46.5
+## 14  1997  50.2
+## 15  2001  48.2
+## 16  2005  49.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot_dt}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 16 x 3
+##     Year  mean   ses
+##    <int> <dbl> <dbl>
+##  1  1945  48.5 0.957
+##  2  1950  43.9 1.30 
+##  3  1951  52.9 2.21 
+##  4  1955  49.2 0.973
+##  5  1959  48.4 1.10 
+##  6  1964  45.7 0.902
+##  7  1966  46.7 1.26 
+##  8  1970  45.7 0.836
+##  9  1974  43.0 0.689
+## 10  1979  47.5 0.395
+## 11  1983  47.7 0.903
+## 12  1987  45.8 0.797
+## 13  1992  46.4 0.823
+## 14  1997  50.1 0.981
+## 15  2001  48.8 0.714
+## 16  2005  49.3 1.46
+\end{verbatim}
+
+\textbf{The predicted and observed ones are shown above. We could see
+that the values are very similar}
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  For the empirical values of each text, calculate the FRE score and the
+  Dale-Chall score. Report the FRE and Dale-Chall scores and the
+  correlation between them.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_readability_measures <-}\StringTok{ }\KeywordTok{textstat_readability}\NormalTok{(conserv, }\KeywordTok{c}\NormalTok{(}\StringTok{"Flesch"}\NormalTok{, }\StringTok{"Dale.Chall"}\NormalTok{))}
+\KeywordTok{textstat_readability}\NormalTok{(}\KeywordTok{texts}\NormalTok{(conserv, }\DataTypeTok{groups =} \StringTok{'Year'}\NormalTok{),}\StringTok{"Flesch"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    document   Flesch
+## 1      1945 48.81546
+## 2      1950 45.51259
+## 3      1951 53.48703
+## 4      1955 49.31257
+## 5      1959 49.34173
+## 6      1964 44.39922
+## 7      1966 48.68902
+## 8      1970 45.66161
+## 9      1974 43.83995
+## 10     1979 47.31275
+## 11     1983 47.62299
+## 12     1987 46.55501
+## 13     1992 46.72040
+## 14     1997 49.70623
+## 15     2001 47.77865
+## 16     2005 49.71698
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{textstat_readability}\NormalTok{(}\KeywordTok{texts}\NormalTok{(conserv, }\DataTypeTok{groups =} \StringTok{'Year'}\NormalTok{),}\StringTok{"Dale.Chall"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    document Dale.Chall
+## 1      1945   25.40831
+## 2      1950   23.84797
+## 3      1951   28.19369
+## 4      1955   26.25370
+## 5      1959   23.11681
+## 6      1964   21.97091
+## 7      1966   25.31153
+## 8      1970   24.44718
+## 9      1974   24.31270
+## 10     1979   23.51683
+## 11     1983   24.69851
+## 12     1987   23.40985
+## 13     1992   22.50325
+## 14     1997   24.67904
+## 15     2001   23.78188
+## 16     2005   21.34034
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{readability_matrix <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(all_readability_measures}\OperatorTok{$}\NormalTok{Flesch, all_readability_measures}\OperatorTok{$}\NormalTok{Dale.Chall)}
+
+\NormalTok{readability_cor <-}\StringTok{ }\KeywordTok{cor}\NormalTok{(readability_matrix)}
+\KeywordTok{rownames}\NormalTok{(readability_cor) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Flesch"}\NormalTok{, }\StringTok{"Dale-Chall"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(readability_cor) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Flesch"}\NormalTok{, }\StringTok{"Dale-Chall"}\NormalTok{)}
+\NormalTok{readability_cor}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               Flesch Dale-Chall
+## Flesch     1.0000000  0.5364108
+## Dale-Chall 0.5364108  1.0000000
+\end{verbatim}
+
+
+\end{document}
