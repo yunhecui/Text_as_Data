@@ -1,0 +1,554 @@
+---
+title: "HW3"
+author: "Yunhe Cui"
+date: "2019/4/26"
+output: word_document
+---
+
+```{r}
+# setting up the environment
+rm(list = ls())
+setwd('/Users/xiaoguihua/Desktop/tad_hw3')#set work directory
+```
+
+
+```{r}
+# libraries are imported here
+library(quanteda)
+library(quanteda.corpora)
+library(dplyr)
+#library(ldatuning)
+#install.packages("tidytext")
+library(topicmodels)
+library(lda)
+library(stm)
+library(tidytext)
+library(ggplot2)
+#install.packages("text2vec")
+library(text2vec)
+#install.packages("stm")
+library(stm)
+#install.packages("bursts")
+library(bursts)
+library(readtext)
+#install.packages("factoextra")
+#install.packages("lsa")
+library(factoextra)
+library(lsa)
+#Rtsne, rsvd and geometry
+#install.packages("Rtsne")
+#install.packages("rsvd")
+#install.packages("geometry")
+library(Rtsne)
+library(rsvd)
+library(geometry)
+```
+
+1. Applying topicmodels to the news corpus:
+(a) To decrease the time it takes to fit a topic model, we will limit our analysis to a subset of the immigration corpus. Create a subset of data corpus immigrationnews that only contains articles from the following news sources: telegraph, guardian, ft, times and sun. Create a table that shows how many documents are associated with each newspaper.
+
+
+```{r}
+#head(summary(data_corpus_immigrationnews),10)
+news_select <- corpus_subset(data_corpus_immigrationnews, paperName == "telegraph"| paperName == "guardian" | paperName == "ft" | paperName ==  "times" | paperName == "sun") #select news sources from raw data
+news_count = aggregate(id~paperName, data=as.data.frame(news_select$documents), length)
+news_count
+
+```
+
+(b) Create a document term matrix with your new immigration corpus in which punctuation and numbers are removed and words are stemmed and set to lower case. Also, remove a custom set of stopwords custom stopwords (available on GitHub) that is relevant to this particular data set. Finally, use quanteda’s “dfm trim” to remove words that occur fewer than 30 times or in fewer than 20 documents. Report the remaining number of features and the total number of documents in the DFM.
+
+
+```{r}
+
+custom_stopwords <- load("/Users/xiaoguihua/Desktop/tad_hw3/data/custom_stopwords.RData")
+news_dfm <- dfm(news_select,remove_punct = TRUE, remove_numbers = TRUE, stem = TRUE,tolower=TRUE,remove=c(stopwords("english"), custom_stopwords))
+news_dfm
+```
+
+```{r}
+#dfm trim
+news_dfm_trimmed <- dfm_trim(news_dfm, min_termfreq = 30, min_docfreq=20)
+news_dfm_trimmed
+```
+
+(c) Preprocessing decisions can have substantive impacts on the topics created by topic model algorithms. Make a brief (1 paragraph) argument for or against removing rare terms from a dfm on which you plan to fit a topic model.
+**Remove the very rare word from a DFM when building a topic model could improve the performance of the model. Because if a word appears at a very low rate and it still be included in the model, LDA model might miscluster it and create "junk" topics.**
+
+
+(d) Fit a topic model with 30 topics using LDA(), with method = "Gibbs". Increase the number of iterations to 3000 to ensure that the model describes the underlying data well
+and set the seed to 10012 so that you can replicate your results. Report the loglikelihood of your topic model object.
+
+```{r}
+topic_num <- 30
+topic_model <- LDA(news_dfm_trimmed, k=topic_num, method='Gibbs', control=list(seed=10012, iter=3000))
+print(paste0("the loglikelihood for the topic model is: ", topic_model@loglikelihood))
+```
+
+(e) Examine the top 10 words that contribute the most to each topic using get terms(). Find the most likely topic for each document using topics(). Rank topics according to the number of documents for which they are the most likely topic and label the top five (i.e. by looking at the most likely words withing each of these topics). Explain your choice of labels. You should save the top 10 words over all 30 topics, for later use.
+
+```{r}
+news_top_terms <- get_terms(topic_model,k=10)
+#news_top_terms
+
+news_topics <- topics(topic_model)
+
+news_tidy_topics <- tidy(topic_model, matrix = "beta") 
+
+#head(news_tidy_topics)
+news_rank_topics <- news_tidy_topics %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+#head(news_rank_topics)
+
+doc_topics<-topic_model@gamma
+
+# Transpose the data so that the days are columns
+doc_topics <- t(doc_topics)
+dim(doc_topics)
+doc_topics[1:5,1:5]
+
+max <- apply(doc_topics, 2, which.max)
+
+top_topic_filter <- sort(table(max),decreasing=TRUE)[1:5]
+top_topic_sub <- news_rank_topics[news_rank_topics$topic %in% names(top_topic_filter) ,]
+
+topic_result <- top_topic_sub$topic
+unique(topic_result)
+```
+
+
+```{r}
+#news_top_terms[,1]
+#news_top_terms[,2]
+#news_top_terms[,4]
+#news_top_terms[,21]
+#news_top_terms[,26]
+
+topic_result[topic_result == 1] <- "immigration"
+topic_result[topic_result == 2] <- "election"
+topic_result[topic_result == 4] <- "law"
+topic_result[topic_result == 21] <- "election"
+topic_result[topic_result == 26] <- "party"
+
+
+top_topic_sub$topic <- topic_result
+topic_result
+```
+
+
+(f) Examine the topics that contribute the most to each document, using the code from recitation to visualize the top two topics per document for the Sun and the Time with separate graphs for each newspaper. Make sure that the documents are sorted by day of publication (the “day” variable in the data corpus immigrationnews corpus). Discuss your findings.
+
+```{r}
+which.max2<-function(x, k=30){
+  which(x == sort(x,partial=(k-1))[k-1])
+}
+#apply function 
+max2<- apply(doc_topics, 2, which.max2)
+max2<-sapply(max2, max)
+
+# Combine data
+top2 <- data.frame(max = max, max2 = max2, date = news_select$documents$day, paperName =  news_select$documents$paperName)
+head(top2)
+
+#get subsets of data: Sun & Time
+sun_sub <- top2[top2$paperName == "sun",]
+time_sub <- top2[top2$paperName == "times",]
+#time_sub
+#sun_sub
+#sort two data subsets by time
+sun_sub$date <- as.numeric(sun_sub$date)
+time_sub$date <- as.numeric(time_sub$date)
+#sun_sub
+sun_sub <- sun_sub[order(sun_sub$date),]
+time_sub <- time_sub[order(time_sub$date),]
+#plot sun
+sun_plot <- ggplot(sun_sub, aes(x=date, y=max, pch="Max1")) 
+sun_plot + geom_point(aes(x=date, y=max2, pch="Max2") ) +theme_bw() + ylab("Topic Number") + ggtitle("Sun: Top News Topics per Day") + geom_point() + xlab(NULL) + scale_shape_manual(values=c(18, 1), name = "Topic Rank") 
+  
+#plot time
+time_plot <- ggplot(time_sub, aes(x=date, y=max, pch="Max1")) 
+time_plot + geom_point(aes(x=date, y=max2, pch="Max2")) +theme_bw() + ylab("Topic Number") + ggtitle("Time: Top News Topics per Day") + geom_point() + xlab(NULL) + scale_shape_manual(values=c(18, 1), name = "Topic Rank") 
+
+
+```
+
+(g) Finally, we can find the average contribution of a topic to an article from a particular newspaper, and compare newspapers on particular topics. For each of the 5 topics you’ve named, see how their prevalence varies among the different newspapers. To do so, estimate the mean contribution of each topic over each newspaper. Report the contribution of each of the top 5 topics to each of the 5 newspapers. Discuss your findings.
+```{r}
+
+topics_df <- data.frame(topic_model@gamma)
+names(topics_df) <- seq(1:30)
+topics_df_s <- topics_df[,c(1,2,4,21,26)]
+topics_df_s$paperName <- news_select$documents$paperName
+
+agg_paper <- aggregate(cbind(topics_df_s$`1`, topics_df_s$`2`, topics_df_s$`4`, topics_df_s$`21`, topics_df_s$`26`)~paperName, data=topics_df_s, FUN = mean)
+#agg_paper
+
+names(agg_paper) <- c('paperName', 1,2,4,21,26)
+agg_paper
+```
+
+2. Topic stability: We want to see how stable these topics are, under two different topic pa- rameter values.
+(a) Re-run the model from question 1 with a different seed. Report the @loglikelihood of your topic model object.
+
+```{r}
+topic_model_2 <- LDA(news_dfm_trimmed, k=topic_num, method='Gibbs', control=list(seed=1995, iter=3000))
+print(paste0("the loglikelihood for the topic model is: ", topic_model_2@loglikelihood))
+```
+
+(b) For each topic in the new model, find the topic that is the closest match in the original run in terms of cosine similarity of the topic distribution over words. Your answer should be a table.
+
+(c) Calculate the average number of words in the top 10 words shared by each matched topic pair. Your answer should be a table.
+
+```{r}
+match <- function(tm1, tm2,topic_num){
+  topic2_words <- tm1@beta
+  topic1_words <- tm2@beta
+  cos_sim <- as.data.frame.matrix(sim2(x = topic2_words, y = topic1_words, method = "cosine"))
+  
+  cos_sim$closest_match <- seq(1:ncol(cos_sim))[apply(cos_sim,1, which.max)]
+  match_result <- data.frame(cbind(seq(1:nrow(cos_sim)), cos_sim$closest_match))
+  names(match_result) <- c("tm_1","tm_2")
+  
+  print(match_result)
+  
+  news_tidy_topics <- tidy(tm1, matrix = "beta")
+  top10_words_tm1 <- news_tidy_topics %>%
+    group_by(topic) %>%
+    top_n(10, beta) %>%
+    ungroup() %>%
+    arrange(topic, -beta)
+
+  news_tidy_topics2 <- tidy(tm2, matrix = "beta")
+  top10_words_tm2 <- news_tidy_topics2 %>%
+    group_by(topic) %>%
+    top_n(10, beta) %>%
+    ungroup() %>%
+    arrange(topic, -beta)
+
+for (i in 1:topic_num){
+  #print(i)
+  topic_tm1 = as.numeric(match_result$tm_1[i])
+  topic_tm2 = as.numeric(match_result$tm_2[i])
+  
+  word_tm1 = top10_words_tm1$term[top10_words_tm1['topic'] == topic_tm1]
+  word_tm2 = top10_words_tm2$term[top10_words_tm2['topic'] == topic_tm2]
+  
+  num_match = length(intersect(word_tm1, word_tm2))
+  match_result$avg_match[i] = num_match
+  #print(word_tm1)
+  #print(word_tm2)
+  #print(topic_tm1)
+}
+
+  print(match_result)
+  #return(match_result)
+  
+}
+
+match(topic_model, topic_model_2,30)
+
+```
+
+
+(d) Now run two more models, but this time, use only 5 topics. Again, find the average number of words in the top ten shared by each matched topic pair. How stable are the models with 5 topics compared to the models with 30 topics?
+
+```{r}
+topic_num <- 5
+topic_model_5_1 <- LDA(news_dfm_trimmed, k=topic_num, method='Gibbs', control=list(seed=10012, iter=3000))
+topic_model_5_2 <- LDA(news_dfm_trimmed, k=topic_num, method='Gibbs', control=list(seed=1995, iter=3000))
+
+```
+
+```{r}
+match(topic_model_5_1, topic_model_5_2,5)
+```
+**According to the result above, the model with 5 topics is more stable than the model with 30 topics**
+
+3. Topic Models with covariates: The Structural Topic Model (STM) is designed to incorpo- rate document-level variables into a standard topic model. Since, we have information about both the newspaper and the date of the articles, we can use an STM (from the stm package) to model the effects of these covariates directly.
+(a) Using only articles from the Sun and Times, construct a numeric date variable from the “day” variable in the immigration news corpus. Use what preprocessing you believe to be appropriate for this problem. Discuss your preprocessing choice.
+
+```{r}
+news_select_ts <- corpus_subset(data_corpus_immigrationnews, paperName ==  "times" | paperName == "sun")
+news_ts_date <- as.numeric(news_select_ts$documents$day)
+news_select_ts$documents$day <- as.numeric(news_select_ts$documents$day)
+news_ts_dfm <- dfm(news_select_ts,remove_punct = TRUE, remove_numbers = TRUE,stem = TRUE,tolower=TRUE,remove=c(stopwords("english"), custom_stopwords))
+#news_ts_dfm_trimmed <- dfm_trim(news_ts_dfm, minCount=30, minDoc=20)
+
+```
+
+
+
+(b) Fit an STM model where the topic content varies according to this binary variable, and where the prevalence varies according to both this binary variable and the spline of the date variable you’ve created. Be sure to use the spectral initialization and set k=0, which will allow the STM function to automatically select a number of topics using the spec- tral learning method. Keep in mind that this function is computationally demanding, so start with the minimum threshold document frequency threshold set to 10; if your computer takes an unreasonably long time to fit the STM model with this threshold, you can raise it to as high as 30.
+
+```{r}
+news_ts_df = as.data.frame(cbind(news_select_ts$documents$texts, news_select_ts$documents$day, news_select_ts$documents$paperName))
+names(news_ts_df) <- c("texts", "day", "paperName")
+news_ts_df$paperName <- as.factor(news_ts_df$paperName)
+news_ts_df$day <- as.numeric(news_ts_df$day)
+
+stm1 <- stm(news_ts_dfm, K=0, init.type='Spectral', seed=100, prevalence =~paperName + s(day), data=news_ts_df, reportevery = 10)
+
+```
+
+Report the number of topics selected in the fitted model. Also report the number of iterations completed before the model converged.
+
+```{r}
+stm_topics <- data.frame(stm1$theta)
+print(paste0("the number of topics selected in the fitted model is:", ncol(stm_topics)))
+print(paste0("the number of iteration completed before model converged is:", stm1$convergence$its))
+```
+
+
+(c) Identify and name each of the 5 topics that occur in the highest proportion of documents using the following code:1
+             plot(fit.stm, type = "summary")
+             
+             
+
+```{r}
+plot(stm1, type="summary",  n=10, text.cex=.2)
+plot(stm1, type="summary",  n=10, text.cex=.6)
+```
+
+
+(d) Using the visualization commands in the stm package, discuss one of these top 5 topics. How does the content vary with the paper discussing that topic? How does the prevalence change over time?
+
+```{r}
+paper_effect<- estimateEffect(c(84) ~ paperName, stm1, meta=news_ts_df)
+plot(paper_effect, covariate="paperName",model=stm1, method="difference",cov.value1 = "sun", cov.value2 = "times")
+```
+```{r}
+day_effect<- estimateEffect(c(84) ~ day, stm1, meta=news_ts_df)
+plot(day_effect, covariate="day",model=stm1, method="continuous", xlab="days")
+```
+
+
+4. Non-Parametric Scaling - Wordfish: Recall that the Wordfish algorithm allows us to scale political texts by a latent dimension. We will apply this function to analyze the UK manifestos.
+(a) First, create a corpus that is the subset of the data corpus ukmanifestos that contains only speeches by the Conservative (‘Con’) and Labor (‘Lab’) parties.
+
+
+```{r}
+data_uk <- data_corpus_ukmanifestos
+data_uk_subset <- corpus_subset(data_uk,data_uk$documents$Party == 'Con' | data_uk$documents$Party == 'Lab')
+
+```
+
+
+(b) Quanteda’s implementation of Wordfish, textmodel wordfish, requires that we provide the indices for a pair of documents to globally identify θ, the latent dimension of interest (e.g. lower values of θ = more Liberal, higher values of θ = more Conservative). In this case, we are looking to estimate the latent left-right ideological dimension. Use the indices of the 1979 Labor and Conservative manifestos to do so. That is, set dir = c(index of 1979 Labor manifesto, index of 1979 Conservative manifesto).
+
+```{r}
+data_uk_subset_df <- data.frame(data_uk_subset$documents)
+labor <- which(data_uk_subset_df$Year == "1979" & data_uk_subset_df$Party == 'Lab')
+con <- which(data_uk_subset_df$Year == "1979" & data_uk_subset_df$Party == 'Con')
+uk_dfm <- dfm(data_uk_subset,remove_punct=TRUE,remove_number=TRUE,stem=TRUE, remove=stopwords("english"))
+uk_man_tmwf <- textmodel_wordfish(uk_dfm, dir=c(labor, con))
+summary(uk_man_tmwf)
+```
+
+
+(c) Which of the documents is the most left wing? Which is the most right-wing? Are these results surprising? Why or why not?
+
+```{r}
+df <- summary(uk_man_tmwf)
+
+result_df <- data.frame(cbind(rownames(data_uk_subset_df),
+                              df$estimated.document.positions$theta))
+names(result_df) <- c("name", "result")
+most_right_wing <- result_df[which.max(result_df$result),]
+most_left_wing <- result_df[which.min(result_df$result),]
+print(paste0("the most right wing is: ",most_right_wing$name))
+print(paste0("the most left wing is: ",most_left_wing$name))
+```
+**I think the model is not that precise. We generally think that Conservative is the more left wing while the Labor party is more right wing. However, as the result shown above, different years of Conservative Party speeches are thought as "most right wing" and "most left wing". **
+
+(d) Re-create the “guitar plot” from recitation. Describe the parameters estimated by Word- fish that lie on the axes of the plot.
+
+```{r}
+# most important features--word fixed effects
+words <- uk_man_tmwf$psi # values
+names(words) <- uk_man_tmwf$features # the words
+
+#sort(words)[1:50]
+#sort(words, decreasing=T)[1:50]
+
+# Guitar plot
+weights <- uk_man_tmwf$beta
+
+plot(weights, words)
+```
+**The x axis shows marginal word weights, which indicate the word ability to discriminate between classes; y axis is the word fixed effects which shows how frequent the word shows in general**
+
+(e) Optional: Estimate a linear regression with the Wordfish score as the dependent variable and binary variable indicating whether or not a Manifesto was from the Labor party. Include a binary control variable for each manifesto. If we use being Labor as a proxy for ‘liberal’ ideology (in the American sense of the word), how well did our Wordfish model do at capturing latent ideology
+
+```{r}
+result_df_e <- data.frame(cbind(data_uk_subset_df$Party,
+                              df$estimated.document.positions$theta))
+result_df_e$party <- ifelse(result_df_e$X1 == "Lab", 1, 0)
+result_df_e$X2 <- as.numeric(result_df_e$X2)
+lr_res <- lm(X2 ~ party, data=result_df_e)
+summary(lr_res)
+```
+
+**p value is larger than 0.5, so it is not statistically significant. We could conclude that wordfish score and party are not meaningfully correlated**
+
+5. Burstiness: Here we evaluate the burstiness of several words using the news data corpus of news headlines. To evaluate burstiness we will use the bursts package and the user-written function bursty from recitation that visualizes the results. You can download the news data corpus data from GitHub.
+(a) Create a corpus. For each of the words “trump”, “korea”, and “afghanistan” use the bursty function to visualize the burst period(s) and levels. Also, for each of the plots include a brief interpretation about what the timing and level of the burst may indicate.
+
+```{r}
+#load in the data and conver to corpus and dfm
+news_data <- readRDS("data/news_data.rds")
+news_data <- data.frame(news_data)
+news_data_corpus <- corpus(news_data$headline)
+#get the date docvars
+docvars(news_data_corpus)$date <- as.Date(as.character(news_data$date),"%Y-%m-%d")
+news_dfm5 <- dfm(news_data_corpus)
+#news_data_corpus$documents
+#head(news_data)
+```
+
+```{r}
+bursty <- function(word = "trump", DTM,date) {
+  word.vec <- DTM[, which(colnames(DTM) == word)]
+  if(length(word.vec) == 0) {
+    print(word, " does not exist in this corpus.")
+  } 
+  else {
+    word.times <- c(0,which(as.vector(word.vec)>0))
+    
+    kl <- kleinberg(word.times, gamma = 0.5)
+    kl$start <- date[kl$start+1]
+    kl$end <- date[kl$end]
+    max_level <- max(kl$level)
+    
+    plot(c(kl$start[1], kl$end[1]), c(1,max_level),
+         type = "n", xlab = "Time", ylab = "Level", bty = "n",
+         xlim = c(min(date), max(date)), ylim = c(1, max_level),
+         yaxt = "n")
+    axis(2, at = 1:max_level)
+    
+    for (i in 1:nrow(kl)) {
+      if (kl$start[i] != kl$end[i]) {
+        arrows(kl$start[i], kl$level[i], kl$end[i], kl$level[i], code = 3, angle = 90,
+               length = 0.05)
+      } 
+      else {
+        points(kl$start[i], kl$level[i])
+      }
+    }
+    
+    print(kl)
+  }
+  #note deviation from standard defaults bec don't have that much data
+}
+
+bursty("trump", news_dfm5, news_data_corpus$documents$date)
+bursty("korea", news_dfm5, news_data_corpus$documents$date)
+bursty("afghanistan", news_dfm5, news_data_corpus$documents$date)
+
+
+```
+
+
+6. Dimension Reduction and Semantics: For this question use the news_data.rds (on GitHub). To reduce computation time, use the first 1000 headlines.
+(a) Obtain the document feature matrix (DFM) of the corpus, removing stopwords, punctuation and lower-casing. Perform a principal components analysis on the resulting DFM and rank the words on the first principal component according to their loadings. Report the top 5 with the most positive loadings and the top 5 with the most negative loadings. Is the first principal component interpretable? If so, what would be your interpretation of what it is capturing?
+
+```{r}
+news_data6 <- news_data[1:1000,]
+news_data6_corpus <- corpus(news_data6,text_field="headline")
+news_dfm6 <- dfm(news_data6_corpus,remove_punct=TRUE,tolower=TRUE,remove_number=TRUE,remove=stopwords("english"))
+
+#news_data6_corpus$documents
+
+news_mat <- convert(news_dfm6, to="matrix")
+news_pca <- prcomp(news_mat, center = TRUE, scale = TRUE)
+#fviz_eig(news_pca, addlabels = TRUE)
+loadings <- data.frame(news_pca$rotation)
+
+N <- 5
+pc_loading <- tibble(token = rownames(loadings), loading = as.vector(loadings[,1])) %>% arrange(-loading)
+pc_loading$loading <- scale(pc_loading$loading, center = TRUE)
+pc_loading <- rbind(top_n(pc_loading, N, loading),top_n(pc_loading, -N, loading))
+pc_loading <- transform(pc_loading, token = factor(token, levels = unique(token)))
+pc_loading
+```
+
+
+```{r}
+ggplot(pc_loading, aes(token, loading)) + 
+  geom_bar(stat = "identity", fill = ifelse(pc_loading$loading <= 0, "grey20", "grey70")) +
+  coord_flip() + 
+  xlab("Tokens") + ylab("Tokens with Top Loadings on PC1") +
+  scale_colour_grey(start = .3, end = .7) +
+  theme(panel.background = element_blank(),
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16),
+        axis.title.y = element_text(size=18, margin = margin(t = 0, r = 15, b = 0, l = 15)),
+        axis.title.x = element_text(size=18, margin = margin(t = 15, r = 0, b = 15, l = 0)),
+        legend.text=element_text(size=16),
+        legend.title=element_blank(),
+        legend.key=element_blank(),
+        legend.position = "top",
+        legend.spacing.x = unit(0.25, 'cm'),
+        plot.margin=unit(c(1,1,0,0),"cm"))
+```
+
+(b) Using the lsa package, estimate a latent semantic analysis model. According to the resulting term vector matrix, report the 5 nearest tokens to korea and corruption. Did the model do a good job of capturing ‘meaning’? In other words, do the nearest neighbors for these words make sense?
+
+```{r}
+news_mat_lsa <- convert(news_dfm6, to = "lsa") # convert to transposed matrix (so terms are rows and columns are documents = TDM)
+
+news_mat_lsa <- lw_logtf(news_mat_lsa) * gw_idf(news_mat_lsa) # local - global weighting (akin to TFIDF)
+
+news_lsa <- lsa(news_mat_lsa, dims=dimcalc_share())
+news_lsa_mat <- as.textmatrix(news_lsa)
+
+```
+
+```{r}
+
+korea <- associate(news_lsa_mat, "korea", "cosine", threshold = .001)
+print("nearest neighbor for korea is:")
+korea[1:5]
+
+
+corruption <- associate(news_lsa_mat, "corruption", "cosine", threshold = .001)
+print("nearest neighbor for corruption is:")
+corruption[1:5]
+```
+
+
+(c) Load the pretrained GloVe embeddings provided. Using these embeddings, find the nearest neighbors to korea and corruption. Do these make sense? How do they compare to the nearest neighbors using LSA (keep in mind, these embeddings were estimated on a much larger corpus comprising Wikipedia and Google News articles)?
+
+
+
+```{r}
+pretrained_data <- readRDS("data/pretrained.rds")
+#pretrained_data <- data.frame(pretrained_data)
+
+nearest_neighbors <- function(cue, embeds, N = 5, norm = "l2"){
+  cos_sim <- sim2(x = embeds, y = embeds[cue, , drop = FALSE], method = "cosine", norm = norm)
+  nn <- cos_sim <- cos_sim[order(-cos_sim),]
+  return(names(nn)[2:(N + 1)])  # cue is always the nearest neighbor hence dropped
+}
+
+print("five nearest neighbors for korea are:")
+nearest_neighbors("korea", pretrained_data)
+
+print("five nearest neighbors for corruption are:")
+nearest_neighbors("corruption", pretrained_data)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+

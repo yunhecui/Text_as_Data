@@ -1,0 +1,461 @@
+---
+title: "Homework2_cd2682"
+author: "Chang Du"
+date: "3/22/2019"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r}
+rm(list = ls())
+getwd()  # returns current working directory
+setwd("/Users/xiaoguihua/Desktop/text_as_data/hw2")  # set working directory
+
+library(quanteda)
+library(caret)
+library(randomForest)
+library(dplyr)
+library(mlbench)
+#install.packages("mlbench")
+```
+## Part 1:
+### 1. Perform some Naive Bayes classification by hand (may use math functions or DFM-creating functions, but not any built-in naive Bayes functions).
+### (a)
+- "immigration voter aliens help economy". 
+- Report these estimates. Based on these results, which party would you predict sent the mystery email? Explain whether you trust your findings and why.
+- *Answer:The prior multiplied by the likelihood of this mail comes from the republican is 5.643739e-07 and it comes from dempcrat is 0. So the posterior probability this mail comes from republican is 1 from democrat is 0. So this mail is from republican. I cannot totally trust this result, because the sample is too small. We cannot say the probability is 0 only based on one word 'aliens'.*
+- email          content
+- republican1   immigration aliens wall emergency country
+- republican2   voter economy president growth security
+- republican3   healthcare cost socialism unfair help
+- democrat1     immigration country diversity help security
+- democrat2     healthcare universal preconditions unfair help
+- democrat3     economy inequality opportunity voter help
+- democrat4     abortion choice right women help
+```{r}
+Pr_immigration_republican <- 1/15
+Pr_voter_republican <- 1/15
+Pr_aliens_republican <- 1/15
+Pr_help_republican <- 1/15
+Pr_economy_republican <- 1/15
+
+Pr_immigration_democrat <- 1/20
+Pr_voter_democrat <- 1/20
+Pr_aliens_democrat <- 0
+Pr_help_democrat <- 1/5
+Pr_economy_democrat <- 1/20
+
+Pr_republican <- 3/7
+Pr_democrat <- 4/7
+
+Pr_republican_d <- Pr_immigration_republican*Pr_voter_republican*Pr_aliens_republican*Pr_help_republican*Pr_economy_republican*Pr_republican
+
+Pr_democrat_d <- Pr_immigration_democrat*Pr_voter_democrat*Pr_aliens_democrat*Pr_help_democrat*Pr_economy_democrat*Pr_democrat
+
+Pr_republican_post <- Pr_republican_d/(Pr_republican_d+Pr_democrat_d)
+Pr_democrat_post <- Pr_democrat_d/(Pr_republican_d+Pr_democrat_d)
+
+Pr_republican_post
+Pr_democrat_post
+```
+
+### (b)
+- Laplace smoothing
+*Answer: The probability of this email comes from republican is 0.539133, from democrat is 0.460867. So it's more likely that the republican sent this email. When we calculate the posterior probability in the Naive Bayes situation, we simply counting the number of occurrences of each word and calculate the product of these probabilities. In this way, the total result will be 0 if one of those probabilities is 0. However, the probability of this event is low, but it is not zero in fact. Besides,the data we based is only a small part of the whole data. So we use Laplace Smoothing here to avoid this bias.*
+
+```{r}
+Pr_immigration_republican <- 2/39
+Pr_voter_republican <- 2/39
+Pr_aliens_republican <- 2/39
+Pr_help_republican <- 2/39
+Pr_economy_republican <- 2/39
+
+Pr_immigration_democrat <- 2/44
+Pr_voter_democrat <- 2/44
+Pr_aliens_democrat <- 1/44
+Pr_help_democrat <- 5/44
+Pr_economy_democrat <- 2/44
+
+Pr_republican <- 4/9
+Pr_democrat <- 5/9
+
+Pr_republican_d <- Pr_immigration_republican*Pr_voter_republican*Pr_aliens_republican*Pr_help_republican*Pr_economy_republican*Pr_republican
+
+Pr_democrat_d <- Pr_immigration_democrat*Pr_voter_democrat*Pr_aliens_democrat*Pr_help_democrat*Pr_economy_democrat*Pr_democrat
+
+Pr_republican_post <- Pr_republican_d/(Pr_republican_d+Pr_democrat_d)
+Pr_democrat_post <- Pr_democrat_d/(Pr_republican_d+Pr_democrat_d)
+
+Pr_republican_post
+Pr_democrat_post
+```
+
+## Part 2: 
+### 2.(a)
+```{r}
+yelp_data <- read.csv("yelp.csv", stringsAsFactors = FALSE)
+stars_median <- median(yelp_data$stars)
+yelp_data$classifier <- ifelse(yelp_data$stars > stars_median, 'positive', 'negative')
+head(yelp_data)
+
+yelp_reviews_positive <- yelp_data[which(yelp_data$classifier == 'positive'),]
+yelp_reviews_negative <- yelp_data[which(yelp_data$classifier == 'negative'),]
+```
+### 2.(b)
+*Answer: The positive reviews are 33.37%, neutral are 59.14%, and the negative are 7.49%*
+```{r}
+yelp_data$anchor <- sapply(yelp_data$stars, function(i){
+  if(i == 5){'positive'}
+  else if(i == 1){'negative'}
+  else{'neutral'}
+    })
+
+yelp_data
+
+proportion_positive <-prop.table(table(yelp_data$anchor == 'positive'))
+proportion_neutral <-prop.table(table(yelp_data$anchor == 'neutral'))
+proportion_negative <-prop.table(table(yelp_data$anchor == 'negative'))
+
+proportion_positive
+proportion_neutral
+proportion_negative
+```
+### 3. (a)
+*Answer: Among all the 10,000 reviews, 90.41% are positive reviews and 9.59% are negative reviews. Most of the reviews are positive reviews, we need to investigate deeper. It's not accurate to identify a review only based on the number of positive and negative words, it might be sarcasm. *
+```{r}
+negative_dict <- read.table("negative-words.txt")
+negative_dict <- as.character(unlist(negative_dict))
+
+positive_dict <- read.table("positive-words.txt")
+positive_dict <- as.character(unlist(positive_dict))
+
+# c() used to create vectors of objects
+yelp_reviews <- c(yelp_data$text)
+yelp_reviews <- as.character(tolower(yelp_reviews))
+
+dfm_negative_reviews <- dfm(yelp_reviews, select = negative_dict)
+dfm_positive_reviews <- dfm(yelp_reviews, select = positive_dict)
+
+yelp_data$negative_words <- rowSums(dfm_negative_reviews)
+yelp_data$positive_words <- rowSums(dfm_positive_reviews)
+yelp_data$sentiment_score <- yelp_data$positive_words- yelp_data$negative_words
+
+yelp_data$sentiment_score_label <- ifelse(yelp_data$sentiment_score >= 0, 'positive', 'negative')
+yelp_data
+
+proportion_positive <-prop.table(table(yelp_data$sentiment_score_label == 'positive'))
+proportion_negative <-prop.table(table(yelp_data$sentiment_score_label == 'negative'))
+proportion_positive
+proportion_negative
+```
+### 3.(b)
+```{r}
+hist_sentiment_score <- hist(yelp_data$sentiment_score, xlab='Sentiment Score', main='Histogram of Sentiment Score')
+```
+### 3.(c)
+*Answer: Baseline accuracy is 0.6663. Accuracy is 0.4112. The accuracy doesn't achieve the baseline, so the performance of this classifier is not good enough.*
+```{r}
+# get confusion matrix
+cmat <- table(yelp_data$classifier, yelp_data$sentiment_score_label)
+acc <- sum(diag(cmat))/sum(cmat) # accuracy = (TP + TN) / (TP + FP + TN + FN)
+recall <- cmat[2,2]/sum(cmat[2,]) # recall = TP / (TP + FN)
+precision <- cmat[2,2]/sum(cmat[,2]) # precision = TP / (TP + FP)
+f1 <- 2*(recall*precision)/(recall + precision)
+baseline_acc <- max(prop.table(table(yelp_data$classifier)))
+cmat
+
+# print
+cat(
+  "Baseline Accuracy: ", baseline_acc, "\n",
+  "Accuracy:",  acc, "\n",
+  "Recall:",  recall, "\n",
+  "Precision:",  precision, "\n",
+  "F1-score:", f1
+)
+```
+### 3.(d)
+*Answer: The RankSum is 26249214, which is a large number. It indicates that there is a big difference between sentiment score and stars, a high positive sentiment score doesn't mean a high stars. So the sentiment score here cannot reflect the accurate emotion of reviewers. We should find other reliable method to calculate reviewers' sentiment score.*
+```{r}
+#yelp_data$rank_sentiment <- rank(yelp_data$sentiment_score, ties.method= "last")
+#yelp_data$rank_star <- rank(yelp_data$stars, ties.method= "last")
+#yelp_data
+
+order_sentiment_score <- order(yelp_data$sentiment_score, decreasing = TRUE)
+yelp_data$rank_sentiment_score <- NA
+yelp_data$rank_sentiment_score[order_sentiment_score] <- 1:nrow(yelp_data)
+
+order_stars <- order(yelp_data$stars, decreasing = TRUE)
+yelp_data$rank_stars <- NA
+yelp_data$rank_stars[order_stars] <- 1:nrow(yelp_data)
+yelp_data
+
+ranksum <- sum(abs(yelp_data$rank_sentiment_score - yelp_data$rank_stars))
+ranksum
+```
+
+### 4. Train a Naive Bayes classifier to predict if a review is positive or negative.
+### 4.(a) uniform priors
+*Answer: Baseline Accuracy is 0.679, the Accuracy is 0.7375, so the model performs great. Recall: 0.5716511, Precision: 0.5948136, F1-score: 0.5830024.*
+```{r}
+# split sample into training & test sets
+set.seed(1984L)
+prop_train <- 0.8
+ids <- 1:nrow(yelp_data)
+ids_train <- sample(ids, ceiling(prop_train*length(ids)), replace = FALSE)
+ids_test <- ids[-ids_train]
+train_set <- yelp_data[ids_train,]
+test_set <- yelp_data[ids_test,]
+
+# get dfm for each set
+train_dfm <- dfm(train_set$text, stem = TRUE, remove_punct = TRUE, remove = stopwords("english"))
+test_dfm <- dfm(test_set$text, stem = TRUE, remove_punct = TRUE, remove = stopwords("english"))
+
+# match test set dfm to train set dfm features
+test_dfm <- dfm_match(test_dfm, features = featnames(train_dfm))
+
+# smoothing ----------------
+# train model on the training set using Laplace smoothing
+nb_model_sm <- textmodel_nb(train_dfm, train_set$classifier, smooth = 1, prior = "uniform")
+
+# evaluate on test set
+predicted_class_sm <- predict(nb_model_sm, newdata = test_dfm)
+
+# get confusion matrix
+cmat_sm <- table(test_set$classifier, predicted_class_sm)
+baseline_acc <- max(prop.table(table(test_set$classifier)))
+nb_acc_sm <- sum(diag(cmat_sm))/sum(cmat_sm) # accuracy = (TP + TN) / (TP + FP + TN + FN)
+nb_recall_sm <- cmat_sm[2,2]/sum(cmat_sm[2,]) # recall = TP / (TP + FN)
+nb_precision_sm <- cmat_sm[2,2]/sum(cmat_sm[,2]) # precision = TP / (TP + FP)
+nb_f1_sm <- 2*(nb_recall_sm*nb_precision_sm)/(nb_recall_sm + nb_precision_sm)
+cmat_sm
+
+# print
+cat(
+  "Baseline Accuracy: ", baseline_acc, "\n",
+  "Accuracy:",  nb_acc_sm, "\n",
+  "Recall:",  nb_recall_sm, "\n",
+  "Precision:",  nb_precision_sm, "\n",
+  "F1-score:", nb_f1_sm
+)
+```
+### 4.(b) docfreq priors
+*Answer: The accuracy increased to 0.742 when we use 'docfreq' priors, it's higher than the accuracy when use 'uniform' priors. So use only related class documents instead of using the documents with the same probavility will achieve a higher predictive accuracy.*
+*Recall: 0.5, Precision: 0.622093, F1-score: 0.5544041.* 
+*The change of prior will change the performance of NB predictions. It's because prior distributions refer to the prior probabilities assigned to the training classes, it affects the calculation of the fitted probabilities. Uniform priors sets the unconditional probability of observing the one class to be the same as observing any other class. Document frequency means that the class priors will be taken from the relative proportions of the class documents used in the training set.*
+```{r}
+# train model on the training set using Laplace smoothing
+nb_model_sm_docfreq <- textmodel_nb(train_dfm, train_set$classifier, smooth = 1, prior = "docfreq")
+
+# evaluate on test set
+predicted_class_sm_docfreq <- predict(nb_model_sm_docfreq, newdata = test_dfm)
+
+# get confusion matrix
+cmat_sm_docfreq <- table(test_set$classifier, predicted_class_sm_docfreq)
+baseline_acc <- max(prop.table(table(test_set$classifier)))
+nb_acc_sm <- sum(diag(cmat_sm))/sum(cmat_sm) # accuracy = (TP + TN) / (TP + FP + TN + FN)
+nb_recall_sm <- cmat_sm[2,2]/sum(cmat_sm[2,]) # recall = TP / (TP + FN)
+nb_precision_sm <- cmat_sm[2,2]/sum(cmat_sm[,2]) # precision = TP / (TP + FP)
+nb_f1_sm <- 2*(nb_recall_sm*nb_precision_sm)/(nb_recall_sm + nb_precision_sm)
+cmat_sm_docfreq
+
+# print
+cat(
+  "Baseline Accuracy: ", baseline_acc, "\n",
+  "Accuracy:",  nb_acc_sm, "\n",
+  "Recall:",  nb_recall_sm, "\n",
+  "Precision:",  nb_precision_sm, "\n",
+  "F1-score:", nb_f1_sm
+)
+```
+### 4.(c)
+*Answer: Accuracy is 0.694 if without smoothing, which is lower than 0.679 with smoothing. It's because smoothing is important when classifying text documents you encounter a word that wasn't in your training data, or just didn't appear in some particular class. Without smoothing, we will get a probability of 0, which will affect the posterior probability to be 0. That's why it reduce the accuracy.*
+*Recall: 0.4454829, Precision: 0.5276753, F1-score: 0.4831081.*
+```{r}
+# w/o smoothing ----------------
+# train model on the training set
+nb_model <- textmodel_nb(train_dfm, train_set$classifier, smooth = 0, prior = "uniform")
+
+# evaluate on test set
+predicted_class <- predict(nb_model, newdata = test_dfm)
+
+# baseline
+baseline_acc <- max(prop.table(table(test_set$classifier)))
+
+# get confusion matrix
+cmat <- table(test_set$class, predicted_class)
+nb_acc <- sum(diag(cmat))/sum(cmat) # accuracy = (TP + TN) / (TP + FP + TN + FN)
+nb_recall <- cmat[2,2]/sum(cmat[2,]) # recall = TP / (TP + FN)
+nb_precision <- cmat[2,2]/sum(cmat[,2]) # precision = TP / (TP + FP)
+nb_f1 <- 2*(nb_recall*nb_precision)/(nb_recall + nb_precision)
+cmat
+
+# print
+cat(
+  "Baseline Accuracy: ", baseline_acc, "\n",
+  "Accuracy:",  nb_acc, "\n",
+  "Recall:",  nb_recall, "\n",
+  "Precision:",  nb_precision, "\n",
+  "F1-score:", nb_f1
+)
+
+```
+
+### 4.(d)
+*Answer: Other features like emoji and punctuations like '?' or '!' can also be used to help classify the sentiment of reviews. And we can also consider the 'cool', 'useful', 'funny'.*
+
+### 5.(a)
+
+
+### 6.(a) SVM has significant benefits in text classification problems where very high-dimensional spaces are common. SVM can classify well with high accuracy and nice theoretical guarantees regarding overfitting, even if the data isn’t linearly separable in the base feature space.
+
+### 6.(b)
+*Answer: when training radial SVM with 0.9 of the dataset, we have the highest accuracy which is 0.74. As the percentage of SVM training set is raising, the accuracy is raising as well and the difference of radial and linear SVM become more significant. The benefit of radial SVM is obvious.*
+```{r}
+# create document feature matrix
+yelp_data_sp <- head(yelp_data, 1000)
+news_dfm <- dfm(yelp_data_sp$text, stem = TRUE, remove_punct = TRUE, remove = stopwords("english")) %>% convert("matrix")
+
+# A. the caret package has it's own partitioning function
+set.seed(1984)
+
+#seq(from=0.1, to=0.9, by=0.1)
+p_values <- c(seq(from=0.1, to=0.9, by=0.1))
+for (p in p_values){
+ids_train <- createDataPartition(1:nrow(news_dfm), p = p, list = FALSE)
+train_x <- news_dfm[ids_train, ] %>% as.data.frame() # train set data
+train_y <- yelp_data_sp$class[ids_train] %>% as.factor()  # train set labels
+test_x <- news_dfm[-ids_train, ]  %>% as.data.frame() # test set data
+test_y <- yelp_data_sp$class[-ids_train] %>% as.factor() # test set labels
+
+# baseline
+baseline_acc <- max(prop.table(table(test_y)))
+
+# B. define training options (we've done this manually above)
+trctrl <- trainControl(method = "cv", number = 5)
+
+# C. train model (caret gives us access to even more options)
+# svm - linear
+svm_mod_linear <- train(x = train_x,
+                        y = train_y,
+                        method = "svmLinear",
+                        trControl = trctrl,
+                        scale = FALSE)
+
+svm_linear_pred <- predict(svm_mod_linear, newdata = test_x)
+svm_linear_cmat <- confusionMatrix(svm_linear_pred, test_y)
+
+# svm - radial
+svm_mod_radial <- train(x = train_x,
+                        y = train_y,
+                        method = "svmRadial",
+                        trControl = trctrl,
+                        scale = FALSE)
+
+svm_radial_pred <- predict(svm_mod_radial, newdata = test_x)
+svm_radial_cmat <- confusionMatrix(svm_radial_pred, test_y)
+
+cat(
+  "Baseline Accuracy: ", baseline_acc, "\n",
+  "SVM-Linear Accuracy:",  svm_linear_cmat$overall[["Accuracy"]], "\n",
+  "SVM-Radial Accuracy:",  svm_radial_cmat$overall[["Accuracy"]]
+)}
+```
+### 6.(c)
+*Answer: SVM Radial kernel is more suitable for text analytics, because high-dimensional spaces are common in text analytics. SVM can classify well with high accuracy and nice theoretical guarantees regarding overfitting, even if the data isn’t linearly separable in the base feature space. According to the accuracy of 6(b), we can see Radial Kernel works better.*
+
+### 7.(a)
+
+```{r}
+yelp_data_sample <- head(yelp_data, 500)
+
+yelp_data_sample$text <- gsub(pattern = "!", "", yelp_data_sample$text)
+
+# what's the distribution of classes?
+prop.table(table(yelp_data_sample$sentiment_score_label))
+
+set.seed(1984)
+yelp_data_sample <- yelp_data_sample %>% sample_n(nrow(yelp_data_sample))
+rownames(yelp_data_sample) <- NULL
+
+# create document feature matrix
+news_dfm <- dfm(yelp_data_sample$text, stem = TRUE, remove_punct = TRUE, remove = stopwords("english")) %>% convert("matrix")
+
+# keep tokens that appear in at least 5 headlines 
+presen_absent <- news_dfm 
+presen_absent[presen_absent > 0] <- 1
+feature_count <- apply(presen_absent, 2, sum)
+features <- names(which(feature_count > 5))
+news_dfm <- news_dfm[,features] # feature selection
+
+# caret package has it's own partitioning function
+set.seed(1984)
+ids_train <- createDataPartition(1:nrow(news_dfm), p = 0.8, list = FALSE, times = 1)
+train_x <- news_dfm[ids_train, ] %>% as.data.frame() # train set data
+train_y <- yelp_data_sample$sentiment_score_label[ids_train] %>% as.factor()  # train set labels
+test_x <- news_dfm[-ids_train, ]  %>% as.data.frame() # test set data
+test_y <- yelp_data_sample$sentiment_score_label[-ids_train] %>% as.factor() # test set labels
+```
+
+### 7.(b)
+*Answer: the top 10 most important features according to this measure are: place, food, good, great, one, like, servic, time, friend, love.*
+```{r}
+set.seed(1984)
+system.time(rf.base <- randomForest(x = train_x, y = train_y, importance = TRUE))
+token_importance <- round(importance(rf.base, 2), 2)
+head(rownames(token_importance)[order(-token_importance)])
+
+# plot importance
+# gini impurity = how "pure" is given node ~ class distribution = 0 if all instances the node applies to are of the same class
+# upper bound depends on number of instances
+varImpPlot(rf.base, n.var = 10, main = "Variable Importance")
+```
+
+### 7.(c)
+```{r}
+trainControl <- trainControl(method = "cv", number = 5)
+metric <- "Accuracy"
+mtry <- sqrt(ncol(train_x))
+tunegrid <- expand.grid(.mtry = mtry)
+set.seed(1984)
+
+rf.man <- train(x = train_x, y = train_y, method = "rf", metric = metric, tuneGrid = tunegrid, trControl = trainControl)
+
+# get confusion matrix
+cmat_sm <- table(predict(rf.man, test_x), test_y)
+baseline_acc <- max(prop.table(table(test_set$classifier)))
+nb_acc_sm <- sum(diag(cmat_sm))/sum(cmat_sm) # accuracy = (TP + TN) / (TP + FP + TN + FN)
+nb_recall_sm <- cmat_sm[2,2]/sum(cmat_sm[2,]) # recall = TP / (TP + FN)
+nb_precision_sm <- cmat_sm[2,2]/sum(cmat_sm[,2]) # precision = TP / (TP + FP)
+nb_f1_sm <- 2*(nb_recall_sm*nb_precision_sm)/(nb_recall_sm + nb_precision_sm)
+cmat_sm
+
+# print
+cat(
+  "Baseline Accuracy: ", baseline_acc, "\n",
+  "Accuracy:",  nb_acc_sm, "\n",
+  "Recall:",  nb_recall_sm, "\n",
+  "Precision:",  nb_precision_sm, "\n",
+  "F1-score:", nb_f1_sm)
+```
+
+### 7.(d)
+```{r}
+trainControl <- trainControl(method = "cv", number = 5)
+metric <- "Accuracy"
+mtry_1 <- 0.5*sqrt(ncol(train_x))
+mtry_2 <- 1.5*sqrt(ncol(train_x))
+
+tunegrid_1 <- expand.grid(.mtry = mtry_1)
+set.seed(1984)
+rf.man1 <- train(x = train_x, y = train_y, method = "rf", metric = metric, tuneGrid = tunegrid_1, trControl = trainControl, mtry = mytry_1, ntree = 5)
+cmat_1 <- table(predict(rf.man2, test_x), test_y)
+cmat_1
+
+tunegrid_2 <- expand.grid(.mtry = mtry_2)
+set.seed(1984)
+rf.man2 <- train(x = train_x, y = train_y, method = "rf", metric = metric, tuneGrid = tunegrid_2, trControl = trainControl, mtry=mytry_2, ntree = 5)
+cmat_2 <- table(predict(rf.man2, test_x), test_y)
+cmat_2
+```
